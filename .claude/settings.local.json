@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd project specification v2.1 with 7-phase implementation plan\n\nComplete spec covering architecture \\(Next.js + FastAPI monorepo\\),\nprocessing pipeline \\(OCR, PII scrubbing, LangChain LLM analysis\\),\noutput format \\(Markdown + PDF with charts\\), security \\(reCAPTCHA,\nrate limiting\\), WhatsApp integration \\(Twilio\\), and phased\ndevelopment roadmap.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh api:*)",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

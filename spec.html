@@ -27,9 +27,7 @@
             --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: var(--gray-50);
@@ -40,184 +38,53 @@
         /* Header */
         .header {
             background: linear-gradient(135deg, #1e3a5f 0%, #1a56db 50%, #7c3aed 100%);
-            color: white;
-            padding: 48px 0 40px;
-            position: relative;
-            overflow: hidden;
+            color: white; padding: 48px 0 40px; position: relative; overflow: hidden;
         }
         .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-            border-radius: 50%;
+            content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%;
         }
-        .header-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 32px;
-            position: relative;
-        }
-        .header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        .header .subtitle {
-            font-size: 1.05rem;
-            opacity: 0.85;
-            font-weight: 400;
-        }
+        .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; }
+        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
+        .header .subtitle { font-size: 1.05rem; opacity: 0.85; font-weight: 400; }
         .version-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-top: 12px;
-            backdrop-filter: blur(4px);
+            display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 14px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-top: 12px; backdrop-filter: blur(4px);
         }
 
-        /* Navigation */
-        .nav {
-            background: white;
-            border-bottom: 1px solid var(--gray-200);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
-        }
-        .nav-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 32px;
-            display: flex;
-            gap: 0;
-            overflow-x: auto;
-        }
+        /* Nav */
+        .nav { background: white; border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 32px; display: flex; gap: 0; overflow-x: auto; }
         .nav a {
-            display: block;
-            padding: 14px 18px;
-            text-decoration: none;
-            color: var(--gray-500);
-            font-size: 0.85rem;
-            font-weight: 500;
-            white-space: nowrap;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
+            display: block; padding: 14px 16px; text-decoration: none; color: var(--gray-500);
+            font-size: 0.82rem; font-weight: 500; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s;
         }
-        .nav a:hover {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-            background: var(--primary-light);
-        }
+        .nav a:hover { color: var(--primary); border-bottom-color: var(--primary); background: var(--primary-light); }
 
-        /* Main content */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 32px;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px; }
 
         /* Section cards */
-        .section {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-        .section-header {
-            padding: 20px 28px;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .section { background: white; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; overflow: hidden; }
+        .section-header { padding: 20px 28px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 12px; }
         .section-header .num {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: var(--primary);
-            color: white;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;
+            background: var(--primary); color: white; border-radius: 8px; font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
         }
-        .section-header h2 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--gray-900);
-        }
-        .section-body {
-            padding: 24px 28px;
-        }
+        .section-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--gray-900); }
+        .section-body { padding: 24px 28px; }
 
         /* Lists */
-        .goal-list, .non-goal-list {
-            list-style: none;
-            display: grid;
-            gap: 10px;
-        }
-        .goal-list li, .non-goal-list li {
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 0.92rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .goal-list li {
-            background: var(--success-light);
-            border-left: 3px solid var(--success);
-        }
-        .goal-list li::before {
-            content: '\2713';
-            color: var(--success);
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .non-goal-list li {
-            background: var(--gray-100);
-            border-left: 3px solid var(--gray-300);
-            color: var(--gray-700);
-        }
-        .non-goal-list li::before {
-            content: '\2717';
-            color: var(--gray-500);
-            font-weight: 700;
-            flex-shrink: 0;
-        }
+        .goal-list, .non-goal-list { list-style: none; display: grid; gap: 10px; }
+        .goal-list li, .non-goal-list li { padding: 10px 14px; border-radius: 8px; font-size: 0.92rem; display: flex; align-items: flex-start; gap: 10px; }
+        .goal-list li { background: var(--success-light); border-left: 3px solid var(--success); }
+        .goal-list li::before { content: '\2713'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+        .non-goal-list li { background: var(--gray-100); border-left: 3px solid var(--gray-300); color: var(--gray-700); }
+        .non-goal-list li::before { content: '\2717'; color: var(--gray-500); font-weight: 700; flex-shrink: 0; }
 
-        /* Two columns */
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        @media (max-width: 768px) {
-            .two-col { grid-template-columns: 1fr; }
-        }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
 
-        /* Sub-section labels */
-        .sub-label {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 3px 10px;
-            border-radius: 4px;
-            margin-bottom: 12px;
-        }
+        .sub-label { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 4px; margin-bottom: 12px; }
         .sub-label.blue { background: var(--primary-light); color: var(--primary); }
         .sub-label.green { background: var(--success-light); color: var(--success); }
         .sub-label.purple { background: var(--accent-light); color: var(--accent); }
@@ -225,56 +92,15 @@
         .sub-label.red { background: var(--danger-light); color: var(--danger); }
 
         /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-        thead th {
-            background: var(--gray-100);
-            padding: 10px 14px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: var(--gray-700);
-            border-bottom: 2px solid var(--gray-200);
-        }
-        tbody td {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--gray-100);
-            vertical-align: top;
-        }
-        tbody tr:hover {
-            background: var(--gray-50);
-        }
-        code {
-            background: var(--gray-100);
-            padding: 2px 7px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            color: var(--accent);
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead th { background: var(--gray-100); padding: 10px 14px; text-align: left; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-700); border-bottom: 2px solid var(--gray-200); }
+        tbody td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+        tbody tr:hover { background: var(--gray-50); }
+        code { background: var(--gray-100); padding: 2px 7px; border-radius: 4px; font-size: 0.85em; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
 
-        /* Tech stack badges */
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .tech-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            border: 1px solid;
-        }
+        /* Tech badges */
+        .tech-stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .tech-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; border: 1px solid; }
         .tech-badge.backend { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
         .tech-badge.frontend { background: #fce7f3; color: #9d174d; border-color: #f9a8d4; }
         .tech-badge.infra { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
@@ -282,310 +108,116 @@
         .tech-badge.storage { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
 
         /* Flow diagram */
-        .flow {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            margin: 16px 0;
-        }
-        .flow-step {
-            display: flex;
-            align-items: stretch;
-            gap: 16px;
-        }
-        .flow-line {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 36px;
-            flex-shrink: 0;
-        }
-        .flow-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: 3px solid var(--primary-light);
-            flex-shrink: 0;
-            margin-top: 14px;
-        }
-        .flow-connector {
-            width: 2px;
-            flex: 1;
-            background: var(--gray-200);
-            min-height: 8px;
-        }
-        .flow-content {
-            flex: 1;
-            padding: 10px 16px;
-            margin-bottom: 4px;
-            border-radius: 8px;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            font-size: 0.9rem;
-        }
-        .flow-content strong {
-            color: var(--primary);
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-        .flow-content p {
-            margin-top: 2px;
-            color: var(--gray-700);
-        }
+        .flow { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+        .flow-step { display: flex; align-items: stretch; gap: 16px; }
+        .flow-line { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
+        .flow-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 3px solid var(--primary-light); flex-shrink: 0; margin-top: 14px; }
+        .flow-connector { width: 2px; flex: 1; background: var(--gray-200); min-height: 8px; }
+        .flow-content { flex: 1; padding: 10px 16px; margin-bottom: 4px; border-radius: 8px; background: var(--gray-50); border: 1px solid var(--gray-200); font-size: 0.9rem; }
+        .flow-content strong { color: var(--primary); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .flow-content p { margin-top: 2px; color: var(--gray-700); }
 
-        /* Config table */
-        .config-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        @media (max-width: 768px) {
-            .config-grid { grid-template-columns: 1fr; }
-        }
-        .config-item {
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            padding: 14px 16px;
-        }
-        .config-item .key {
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 0.82rem;
-            color: var(--accent);
-            font-weight: 600;
-        }
-        .config-item .val {
-            font-size: 0.85rem;
-            color: var(--gray-700);
-            margin-top: 2px;
-        }
-        .config-item .desc {
-            font-size: 0.8rem;
-            color: var(--gray-500);
-            margin-top: 4px;
-        }
+        /* Config grid */
+        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 768px) { .config-grid { grid-template-columns: 1fr; } }
+        .config-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 14px 16px; }
+        .config-item .key { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem; color: var(--accent); font-weight: 600; }
+        .config-item .val { font-size: 0.85rem; color: var(--gray-700); margin-top: 2px; }
+        .config-item .desc { font-size: 0.8rem; color: var(--gray-500); margin-top: 4px; }
 
         /* Callouts */
-        .callout {
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin: 16px 0;
-            font-size: 0.9rem;
-            border-left: 4px solid;
-        }
-        .callout.info {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: #1e3a5f;
-        }
-        .callout.warn {
-            background: var(--warning-light);
-            border-color: var(--warning);
-            color: #78350f;
-        }
-        .callout.danger {
-            background: var(--danger-light);
-            border-color: var(--danger);
-            color: #7f1d1d;
-        }
-        .callout.success {
-            background: var(--success-light);
-            border-color: var(--success);
-            color: #064e3b;
-        }
-        .callout strong {
-            display: block;
-            margin-bottom: 4px;
-        }
+        .callout { padding: 16px 20px; border-radius: 8px; margin: 16px 0; font-size: 0.9rem; border-left: 4px solid; }
+        .callout.info { background: var(--primary-light); border-color: var(--primary); color: #1e3a5f; }
+        .callout.warn { background: var(--warning-light); border-color: var(--warning); color: #78350f; }
+        .callout.danger { background: var(--danger-light); border-color: var(--danger); color: #7f1d1d; }
+        .callout.success { background: var(--success-light); border-color: var(--success); color: #064e3b; }
+        .callout strong { display: block; margin-bottom: 4px; }
 
-        /* Disclaimer box */
-        .disclaimer-box {
-            background: #fef2f2;
-            border: 2px solid #fca5a5;
-            border-radius: var(--radius);
-            padding: 20px 24px;
-            margin: 16px 0;
-            text-align: center;
-        }
-        .disclaimer-box .icon {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-        .disclaimer-box blockquote {
-            font-style: italic;
-            color: #991b1b;
-            font-size: 0.92rem;
-            line-height: 1.6;
-        }
+        .disclaimer-box { background: #fef2f2; border: 2px solid #fca5a5; border-radius: var(--radius); padding: 20px 24px; margin: 16px 0; text-align: center; }
+        .disclaimer-box .icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .disclaimer-box blockquote { font-style: italic; color: #991b1b; font-size: 0.92rem; line-height: 1.6; }
 
-        /* Color indicator demo */
-        .color-demo {
-            display: flex;
-            gap: 16px;
-            margin: 12px 0;
-        }
-        .color-demo .chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
+        /* Color chips */
+        .color-demo { display: flex; gap: 16px; margin: 12px 0; flex-wrap: wrap; }
+        .color-demo .chip { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
         .chip.green-chip { background: #d1fae5; color: #065f46; }
         .chip.yellow-chip { background: #fef3c7; color: #92400e; }
         .chip.red-chip { background: #fee2e2; color: #991b1b; }
-        .chip .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
+        .chip .dot { width: 10px; height: 10px; border-radius: 50%; }
         .chip.green-chip .dot { background: #059669; }
         .chip.yellow-chip .dot { background: #d97706; }
         .chip.red-chip .dot { background: #dc2626; }
 
-        /* Architecture diagram */
-        .arch-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin: 16px 0;
-        }
-        @media (max-width: 768px) {
-            .arch-grid { grid-template-columns: 1fr; }
-        }
-        .arch-box {
-            border: 2px solid;
-            border-radius: var(--radius);
-            padding: 16px;
-            text-align: center;
-        }
-        .arch-box h4 {
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-        .arch-box ul {
-            list-style: none;
-            font-size: 0.82rem;
-            color: var(--gray-700);
-        }
-        .arch-box ul li {
-            padding: 3px 0;
-        }
+        /* Architecture boxes */
+        .arch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+        @media (max-width: 768px) { .arch-grid { grid-template-columns: 1fr; } }
+        .arch-box { border: 2px solid; border-radius: var(--radius); padding: 16px; text-align: center; }
+        .arch-box h4 { font-size: 0.85rem; margin-bottom: 8px; }
+        .arch-box ul { list-style: none; font-size: 0.82rem; color: var(--gray-700); }
+        .arch-box ul li { padding: 3px 0; }
         .arch-box.fe { border-color: #f9a8d4; background: #fdf2f8; }
         .arch-box.fe h4 { color: #9d174d; }
         .arch-box.be { border-color: #93c5fd; background: #eff6ff; }
         .arch-box.be h4 { color: #1e40af; }
         .arch-box.data { border-color: #6ee7b7; background: #ecfdf5; }
         .arch-box.data h4 { color: #065f46; }
-        .arch-arrow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--gray-300);
-        }
 
         /* Output sections preview */
-        .output-preview {
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 12px 0;
-        }
-        .output-section {
-            padding: 10px 16px;
-            font-size: 0.85rem;
-            border-bottom: 1px solid var(--gray-100);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .output-preview { border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; margin: 12px 0; }
+        .output-section { padding: 10px 16px; font-size: 0.85rem; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; gap: 10px; }
         .output-section:last-child { border-bottom: none; }
-        .output-section .order {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+        .output-section .order { width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: white; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .output-section .name { font-weight: 600; }
         .output-section .detail { color: var(--gray-500); margin-left: auto; font-size: 0.8rem; }
 
         /* Checklist */
-        .checklist {
-            list-style: none;
-            display: grid;
-            gap: 8px;
-        }
-        .checklist li {
-            padding: 10px 14px;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 0.88rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .checklist li .check {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--gray-300);
-            border-radius: 4px;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
+        .checklist { list-style: none; display: grid; gap: 8px; }
+        .checklist li { padding: 10px 14px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; font-size: 0.88rem; display: flex; align-items: flex-start; gap: 10px; }
+        .checklist li .check { width: 20px; height: 20px; border: 2px solid var(--gray-300); border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
 
-        h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 12px;
-            margin-top: 20px;
-        }
+        h3 { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 12px; margin-top: 20px; }
         h3:first-child { margin-top: 0; }
         p { margin-bottom: 10px; font-size: 0.92rem; color: var(--gray-700); }
         p:last-child { margin-bottom: 0; }
+        .divider { height: 1px; background: var(--gray-200); margin: 20px 0; }
 
-        .divider {
-            height: 1px;
-            background: var(--gray-200);
-            margin: 20px 0;
-        }
+        .decision { display: inline-block; background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; vertical-align: middle; margin-left: 6px; }
 
-        /* Decision badges */
-        .decision {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            vertical-align: middle;
-            margin-left: 6px;
-        }
-        .decision.confirmed { background: #d1fae5; color: #065f46; }
-        .decision.pending { background: #fef3c7; color: #92400e; }
+        /* Directory tree */
+        .dir-tree { background: #1e293b; color: #e2e8f0; border-radius: var(--radius); padding: 24px 28px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.78rem; line-height: 1.7; overflow-x: auto; white-space: pre; margin: 12px 0; }
+        .dir-tree .dir { color: #60a5fa; }
+        .dir-tree .file { color: #94a3b8; }
+        .dir-tree .comment { color: #64748b; }
 
-        .footer {
-            text-align: center;
-            padding: 32px;
-            color: var(--gray-500);
-            font-size: 0.82rem;
-        }
+        /* Phase cards */
+        .phase-card { border: 1px solid var(--gray-200); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+        .phase-header { display: flex; align-items: center; gap: 14px; padding: 16px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); cursor: default; }
+        .phase-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; }
+        .phase-1 .phase-num { background: #dbeafe; color: #1e40af; }
+        .phase-2 .phase-num { background: #fce7f3; color: #9d174d; }
+        .phase-3 .phase-num { background: #ede9fe; color: #5b21b6; }
+        .phase-4 .phase-num { background: #fef3c7; color: #92400e; }
+        .phase-5 .phase-num { background: #fee2e2; color: #991b1b; }
+        .phase-6 .phase-num { background: #d1fae5; color: #065f46; }
+        .phase-7 .phase-num { background: #e0e7ff; color: #3730a3; }
+        .phase-title { font-weight: 700; font-size: 0.95rem; }
+        .phase-goal { font-size: 0.82rem; color: var(--gray-500); margin-left: auto; }
+        .phase-body { padding: 16px 20px; }
+        .phase-body ul { list-style: none; display: grid; gap: 6px; }
+        .phase-body ul li { padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; color: var(--gray-700); background: var(--gray-50); border-left: 3px solid var(--gray-200); }
+        .phase-verify { margin-top: 12px; padding: 10px 14px; background: var(--success-light); border-radius: 8px; font-size: 0.83rem; color: #065f46; border-left: 3px solid var(--success); }
+        .phase-verify strong { color: #047857; }
+
+        /* Dependency chain */
+        .dep-chain { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 20px 0; }
+        .dep-node { background: white; border: 2px solid var(--primary); border-radius: 10px; padding: 10px 24px; font-weight: 600; font-size: 0.85rem; text-align: center; min-width: 320px; }
+        .dep-arrow { color: var(--primary); font-size: 1.2rem; padding: 4px 0; }
+
+        /* Future list */
+        .future-list { list-style: none; display: grid; gap: 8px; }
+        .future-list li { padding: 10px 14px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 8px; font-size: 0.88rem; color: var(--gray-700); }
+
+        .footer { text-align: center; padding: 32px; color: var(--gray-500); font-size: 0.82rem; }
     </style>
 </head>
 <body>
@@ -595,23 +227,27 @@
     <div class="header-inner">
         <h1>Lab Report AI Interpretation API</h1>
         <p class="subtitle">Educational Lab Report Analysis System &mdash; Full-Stack Monorepo</p>
-        <span class="version-badge">SPECIFICATION v2.1 &middot; UPDATED WITH Q&amp;A DECISIONS</span>
+        <span class="version-badge">SPECIFICATION v2.1 &middot; 14 SECTIONS &middot; 7-PHASE IMPLEMENTATION PLAN</span>
     </div>
 </div>
 
 <!-- NAV -->
 <nav class="nav">
     <div class="nav-inner">
-        <a href="#intent">Intent</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#success">Success Criteria</a>
-        <a href="#io">Inputs / Outputs</a>
-        <a href="#workflow">Workflow</a>
-        <a href="#output-format">Output Format</a>
-        <a href="#config">Configuration</a>
-        <a href="#constraints">Constraints</a>
-        <a href="#safety">Safety &amp; Privacy</a>
-        <a href="#acceptance">Acceptance Tests</a>
+        <a href="#intent">1. Intent</a>
+        <a href="#architecture">2. Architecture</a>
+        <a href="#success">3. Success</a>
+        <a href="#io">4. I/O</a>
+        <a href="#workflow">5. Workflow</a>
+        <a href="#output-format">6. Output</a>
+        <a href="#config">7. Config</a>
+        <a href="#safety">8. Safety</a>
+        <a href="#db-schema">9. Database</a>
+        <a href="#acceptance">10. Tests</a>
+        <a href="#structure">11. Structure</a>
+        <a href="#implementation">12. Phases</a>
+        <a href="#dependencies">13. Dependencies</a>
+        <a href="#future">14. Future</a>
     </div>
 </nav>
 
@@ -633,7 +269,7 @@
                     <li>Multi-language output: English + Urdu (v1); medical terms translated with English in parentheses</li>
                     <li>PII sanitization &mdash; all personal info scrubbed before LLM processing</li>
                     <li>Website upload (Next.js) and WhatsApp chat interface (Twilio)</li>
-                    <li>Reference range sourcing (lab-provided &rarr; LLM medical knowledge fallback)</li>
+                    <li>Reference range sourcing (lab-provided &rarr; LLM medical knowledge fallback with explicit note)</li>
                 </ul>
             </div>
             <div>
@@ -644,7 +280,8 @@
                     <li>No multi-language input reports (English only)</li>
                     <li>No EHR/EMR integration</li>
                     <li>No permanent data storage beyond retention period</li>
-                    <li>No user accounts or authentication (v1)</li>
+                    <li>No user accounts or authentication (v1) &mdash; reCAPTCHA only</li>
+                    <li>No CI/CD pipeline (deferred to later stages)</li>
                     <li>No advanced analytics beyond WhatsApp trends</li>
                 </ul>
             </div>
@@ -659,65 +296,45 @@
         <h2>Architecture &amp; Tech Stack</h2>
     </div>
     <div class="section-body">
-
         <div class="callout info">
             <strong>Monorepo Structure</strong>
             Single repository with <code>/frontend</code> (Next.js) and <code>/backend</code> (FastAPI) directories. Docker Compose orchestrates all services.
         </div>
-
         <div class="arch-grid">
             <div class="arch-box fe">
                 <h4>Frontend</h4>
-                <ul>
-                    <li>Next.js (React)</li>
-                    <li>Upload form + results display</li>
-                    <li>Google reCAPTCHA v3</li>
-                    <li>Polling-based async UX</li>
-                </ul>
+                <ul><li>Next.js (React)</li><li>Tailwind CSS + shadcn/ui</li><li>Google reCAPTCHA v3</li><li>Polling-based async UX</li></ul>
             </div>
             <div class="arch-box be">
                 <h4>Backend</h4>
-                <ul>
-                    <li>FastAPI (REST API)</li>
-                    <li>Celery workers (async)</li>
-                    <li>LangChain (LLM orchestration)</li>
-                    <li>PaddleOCR / AWS Textract</li>
-                    <li>WeasyPrint (PDF)</li>
-                    <li>Matplotlib (charts)</li>
-                </ul>
+                <ul><li>FastAPI (REST API)</li><li>Celery workers (async)</li><li>LangChain (LLM orchestration)</li><li>PaddleOCR</li><li>WeasyPrint (PDF)</li><li>Matplotlib (charts)</li></ul>
             </div>
             <div class="arch-box data">
                 <h4>Data &amp; Infra</h4>
-                <ul>
-                    <li>MySQL (report records)</li>
-                    <li>Redis (Celery broker + WhatsApp sessions)</li>
-                    <li>Docker Compose</li>
-                    <li>Docker Volume (file storage)</li>
-                    <li>Twilio (WhatsApp)</li>
-                </ul>
+                <ul><li>MySQL (SQLAlchemy + Alembic)</li><li>Redis (Celery + WhatsApp sessions)</li><li>Docker Compose</li><li>Docker Volume (file storage)</li><li>Twilio (WhatsApp)</li></ul>
             </div>
         </div>
-
         <h3>Tech Stack</h3>
         <div class="tech-stack">
             <span class="tech-badge frontend">Next.js (React)</span>
+            <span class="tech-badge frontend">Tailwind + shadcn/ui</span>
             <span class="tech-badge backend">FastAPI</span>
             <span class="tech-badge backend">Celery</span>
             <span class="tech-badge ai">LangChain</span>
-            <span class="tech-badge ai">OpenAI GPT-4o / GPT-4o-mini</span>
+            <span class="tech-badge ai">GPT-4o / GPT-4o-mini</span>
             <span class="tech-badge ai">PaddleOCR</span>
             <span class="tech-badge backend">WeasyPrint</span>
             <span class="tech-badge backend">Matplotlib</span>
             <span class="tech-badge storage">MySQL</span>
+            <span class="tech-badge storage">SQLAlchemy + Alembic</span>
             <span class="tech-badge infra">Redis</span>
             <span class="tech-badge infra">Docker Compose</span>
-            <span class="tech-badge infra">Twilio WhatsApp API</span>
+            <span class="tech-badge infra">Twilio</span>
             <span class="tech-badge frontend">reCAPTCHA v3</span>
         </div>
-
         <div class="callout warn" style="margin-top:20px">
-            <strong>Key Decisions Made</strong>
-            LangChain only (no LiteLLM). LLM models configurable via env vars &mdash; defaults: GPT-4o (analysis), GPT-4o-mini (pre-validation). MySQL for persistence, reports table only for v1; user management deferred.
+            <strong>Key Decisions</strong>
+            LangChain only (no LiteLLM). LLM models configurable via env vars &mdash; defaults: GPT-4o (analysis), GPT-4o-mini (pre-validation). MySQL for persistence, reports table only for v1; user management deferred. Prompts stored as separate <code>.txt</code> files in <code>/prompts</code>. Python standard logging.
         </div>
     </div>
 </div>
@@ -733,11 +350,10 @@
             <div>
                 <span class="sub-label green">Functional</span>
                 <ul class="goal-list">
-                    <li>Reports analyzed and returned in Markdown + PDF</li>
+                    <li>Reports analyzed &rarr; Markdown + PDF with all 7 output sections</li>
                     <li>Bar + gauge charts generated for abnormal/critical values</li>
-                    <li>Reference ranges clearly identified with source noted</li>
+                    <li>Reference ranges identified with source noted</li>
                     <li>WhatsApp bot collects age/gender before processing</li>
-                    <li>Detailed category-wise output sections</li>
                 </ul>
             </div>
             <div>
@@ -751,8 +367,8 @@
                     <span class="sub-label purple">Safety / Accuracy</span>
                     <ul class="goal-list">
                         <li>Mandatory disclaimers on all outputs</li>
-                        <li>Color coding reflects LLM severity + rule-based mapping</li>
-                        <li>Translation preserves medical terms in parentheses</li>
+                        <li>Color coding: LLM severity + rule-based mapping</li>
+                        <li>Urdu translation preserves medical terms in parentheses</li>
                     </ul>
                 </div>
             </div>
@@ -769,47 +385,38 @@
     <div class="section-body">
         <h3>API Inputs</h3>
         <table>
-            <thead>
-                <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
-            </thead>
+            <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
             <tbody>
                 <tr><td><code>user_id</code></td><td>string</td><td>Unique session identifier; tracks WhatsApp flow</td></tr>
                 <tr><td><code>age</code></td><td>integer</td><td>Patient age; mandatory for WhatsApp, optional for website</td></tr>
                 <tr><td><code>gender</code></td><td>string</td><td>Male / Female / Other; mandatory for WhatsApp, optional for website</td></tr>
                 <tr><td><code>language</code></td><td>string</td><td>ISO code: <code>en</code> or <code>ur</code> (v1); defaults to <code>en</code></td></tr>
-                <tr><td><code>file_b64</code></td><td>string</td><td>Base64-encoded report (PDF/JPG/PNG)</td></tr>
+                <tr><td><code>file</code></td><td>file (multipart)</td><td>Uploaded report (PDF/JPG/PNG)</td></tr>
                 <tr><td><code>file_type</code></td><td>string</td><td>MIME type: <code>application/pdf</code>, <code>image/jpeg</code>, <code>image/png</code></td></tr>
                 <tr><td><code>captcha_token</code></td><td>string</td><td>Google reCAPTCHA v3 token (website only)</td></tr>
             </tbody>
         </table>
-
         <div class="divider"></div>
-
         <h3>Outputs</h3>
         <table>
-            <thead>
-                <tr><th>Output</th><th>Type</th><th>Notes</th></tr>
-            </thead>
+            <thead><tr><th>Output</th><th>Type</th><th>Notes</th></tr></thead>
             <tbody>
-                <tr><td>Markdown</td><td>string</td><td>Full interpretation with category-wise results, color indicators, associations</td></tr>
-                <tr><td>PDF</td><td>file</td><td>Includes bar + gauge charts, color-coded values (WeasyPrint)</td></tr>
-                <tr><td>Charts</td><td>image</td><td>Bar charts + gauge charts via Matplotlib, embedded in PDF</td></tr>
-                <tr><td>Error</td><td>JSON</td><td>Standardized: <code>status</code>, <code>code</code>, <code>message</code></td></tr>
+                <tr><td>Markdown</td><td>string</td><td>Full 7-section interpretation with color indicators</td></tr>
+                <tr><td>PDF</td><td>file</td><td>Bar + gauge charts, color-coded tables (WeasyPrint)</td></tr>
+                <tr><td>Charts</td><td>image</td><td>Matplotlib bar + gauge charts, embedded in PDF</td></tr>
+                <tr><td>Error</td><td>JSON</td><td><code>{ "status": "error", "code": int, "message": str }</code></td></tr>
             </tbody>
         </table>
-
         <div class="divider"></div>
-
-        <h3>Interfaces</h3>
+        <h3>API Endpoints</h3>
         <table>
-            <thead>
-                <tr><th>Interface</th><th>Details</th></tr>
-            </thead>
+            <thead><tr><th>Method</th><th>Endpoint</th><th>Purpose</th></tr></thead>
             <tbody>
-                <tr><td><strong>API Endpoint</strong></td><td><code>POST /v1/analyze-report</code> &rarr; returns <code>job_id</code><br><code>GET /v1/status/{job_id}</code> &rarr; returns status + results when ready</td></tr>
-                <tr><td><strong>Website</strong></td><td>Next.js upload form with age/gender inputs, reCAPTCHA v3, polling-based loading UX</td></tr>
-                <tr><td><strong>WhatsApp</strong></td><td>Twilio WhatsApp Business API; sequential prompts (Age &rarr; Gender &rarr; Report); sends brief text + PDF</td></tr>
-                <tr><td><strong>Storage</strong></td><td>Docker volume for uploaded files &amp; generated PDFs; auto-deleted after 24&ndash;48h</td></tr>
+                <tr><td><strong>POST</strong></td><td><code>/v1/analyze-report</code></td><td>Submit report; returns <code>{ "job_id": "..." }</code></td></tr>
+                <tr><td><strong>GET</strong></td><td><code>/v1/status/{job_id}</code></td><td>Poll status; returns status, markdown, pdf_url, error</td></tr>
+                <tr><td><strong>GET</strong></td><td><code>/v1/download/{job_id}</code></td><td>Download generated PDF</td></tr>
+                <tr><td><strong>POST</strong></td><td><code>/v1/whatsapp/webhook</code></td><td>Twilio WhatsApp incoming webhook</td></tr>
+                <tr><td><strong>GET</strong></td><td><code>/v1/health</code></td><td>Health check for all services</td></tr>
             </tbody>
         </table>
     </div>
@@ -826,87 +433,42 @@
             <div>
                 <h3>Website Flow</h3>
                 <div class="flow">
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 1 &mdash; Upload</strong><p>User enters age/gender (optional), selects file, reCAPTCHA v3 validates</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 2 &mdash; Validate</strong><p>System checks file type, size (&le;20 MB), and page count (&le;30 pages)</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 3 &mdash; Quick OCR</strong><p>PaddleOCR extracts text from uploaded file</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 4 &mdash; Pre-Validate</strong><p>Cheap LLM (GPT-4o-mini) confirms extracted text is a lab report</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 5 &mdash; PII Scrub</strong><p>Remove all personal info (name, ID, phone, address, DOB, doctor, hospital)</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 6 &mdash; LLM Analysis</strong><p>LangChain &rarr; GPT-4o interprets in English, then translates to Urdu if requested</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 7 &mdash; Charts</strong><p>Matplotlib generates bar + gauge charts for abnormal/critical values</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 8 &mdash; Render</strong><p>Markdown displayed on page; PDF generated via WeasyPrint; available for download</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div></div>
-                        <div class="flow-content"><strong>Step 9 &mdash; Errors</strong><p>Handle invalid file, unreadable scan, unsupported lab type</p></div>
-                    </div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 1 &mdash; Upload</strong><p>User enters age/gender (optional), selects language, uploads file. reCAPTCHA v3 validates.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 2 &mdash; Validate</strong><p>Check file type, size (&le;20 MB), page count (&le;30). Save file, create DB record, dispatch Celery task, return job_id.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 3 &mdash; Poll</strong><p>Frontend redirects to results page, polls <code>GET /status/{job_id}</code> every 2&ndash;3s with loading spinner.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 4 &mdash; OCR</strong><p>PaddleOCR extracts text from uploaded file. Garbage text detection rejects unreadable scans.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 5 &mdash; Pre-Validate</strong><p>GPT-4o-mini confirms extracted text is a lab report. Non-lab documents rejected.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 6 &mdash; PII Scrub</strong><p>Remove all personal info (name, ID, phone, address, DOB, doctor, hospital) from OCR text.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 7 &mdash; LLM Analysis</strong><p>GPT-4o via LangChain interprets scrubbed text. Returns structured JSON with all 7 sections.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 8 &mdash; Translation</strong><p>If language &ne; English, translate via LLM. Medical terms preserved with English in parentheses.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 9 &mdash; Charts + PDF</strong><p>Matplotlib bar + gauge charts. WeasyPrint generates PDF with embedded charts and color tables.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div></div><div class="flow-content"><strong>Step 10 &mdash; Render</strong><p>Frontend detects completion, renders markdown interpretation, shows PDF download button.</p></div></div>
                 </div>
             </div>
             <div>
                 <h3>WhatsApp Flow (Twilio)</h3>
                 <div class="flow">
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 1 &mdash; Collect Info</strong><p>Bot prompts sequentially: Age &rarr; Gender &rarr; Report upload</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 2 &mdash; Validate + OCR</strong><p>File validated, OCR extracts text, cheap LLM confirms lab report</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 3 &mdash; PII Scrub</strong><p>All personal info removed from OCR text</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 4 &mdash; LLM Analysis</strong><p>LangChain processes and generates interpretation</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
-                        <div class="flow-content"><strong>Step 5 &mdash; PDF Generation</strong><p>PDF with charts generated via WeasyPrint + Matplotlib</p></div>
-                    </div>
-                    <div class="flow-step">
-                        <div class="flow-line"><div class="flow-dot"></div></div>
-                        <div class="flow-content"><strong>Step 6 &mdash; Deliver</strong><p>Bot sends brief text message ("Your report is ready") + PDF attachment</p></div>
-                    </div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 1 &mdash; Collect Info</strong><p>Bot prompts: Age &rarr; Gender &rarr; Report upload. Redis state machine per phone number.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 2 &mdash; Validate + OCR</strong><p>File validated, OCR extracts text, cheap LLM confirms lab report.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 3 &mdash; PII Scrub</strong><p>All personal info removed from OCR text.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 4 &mdash; LLM Analysis</strong><p>Same Celery pipeline as website. LangChain interprets report.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 5 &mdash; PDF Generation</strong><p>PDF with charts generated via WeasyPrint + Matplotlib.</p></div></div>
+                    <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div></div><div class="flow-content"><strong>Step 6 &mdash; Deliver</strong><p>Bot sends brief text ("Your report is ready") + PDF attachment via Twilio.</p></div></div>
                 </div>
-
                 <h3 style="margin-top:24px">Edge Cases</h3>
                 <ul class="non-goal-list">
-                    <li>Blurred/low-quality images &rarr; attempt OCR &rarr; reject if garbage text</li>
+                    <li>Blurred images &rarr; garbage text heuristic &rarr; reject with re-upload message</li>
+                    <li>Non-lab documents &rarr; pre-validation rejects with clear error</li>
                     <li>Oversized/long reports &rarr; enforce file size + page limits</li>
-                    <li>Non-English input reports &rarr; reject with message</li>
-                    <li>LLM never gives diagnosis &rarr; disclaimers on all outputs</li>
-                    <li>Incomplete WhatsApp sessions &rarr; Redis TTL auto-expires</li>
+                    <li>Non-English input &rarr; reject (translation is output-only)</li>
+                    <li>LLM failure &rarr; retry once; graceful degradation (markdown without PDF)</li>
+                    <li>WhatsApp incomplete sessions &rarr; Redis TTL (30min) auto-expires</li>
                 </ul>
             </div>
         </div>
-
-        <div class="callout info" style="margin-top: 16px">
+        <div class="callout info" style="margin-top:16px">
             <strong>Async Processing (Website)</strong>
-            <code>POST /v1/analyze-report</code> returns a <code>job_id</code> immediately. Frontend polls <code>GET /v1/status/{job_id}</code> every 2&ndash;3 seconds. A loading spinner with "Your report is being processed" is shown until results are available. Celery worker handles the actual processing.
+            <code>POST /v1/analyze-report</code> returns <code>job_id</code> immediately. Frontend polls <code>GET /v1/status/{job_id}</code> every 2&ndash;3 seconds. Loading spinner with "Your report is being processed" until results are available. Celery worker handles the full pipeline.
         </div>
     </div>
 </div>
@@ -918,58 +480,48 @@
         <h2>Output Format &amp; Visual Design</h2>
     </div>
     <div class="section-body">
-
         <h3>Interpretation Sections (ordered)</h3>
         <div class="output-preview">
-            <div class="output-section"><span class="order">1</span><span class="name">Patient Info</span><span class="detail">Age, gender (if provided), report date</span></div>
-            <div class="output-section"><span class="order">2</span><span class="name">Summary</span><span class="detail">High-level overview of findings</span></div>
-            <div class="output-section"><span class="order">3</span><span class="name">Category-wise Results</span><span class="detail">CBC, Liver Panel, Kidney Panel, Thyroid, Lipid, etc.</span></div>
+            <div class="output-section"><span class="order">1</span><span class="name">Patient Info</span><span class="detail">Age, gender, report date</span></div>
+            <div class="output-section"><span class="order">2</span><span class="name">Summary</span><span class="detail">2&ndash;3 sentence overview of findings</span></div>
+            <div class="output-section"><span class="order">3</span><span class="name">Category-wise Results</span><span class="detail">CBC, Liver, Kidney, Thyroid, Lipid, etc.</span></div>
             <div class="output-section"><span class="order">4</span><span class="name">Abnormal Values Analysis</span><span class="detail">Detailed explanation of out-of-range values</span></div>
-            <div class="output-section"><span class="order">5</span><span class="name">Clinical Associations</span><span class="detail">What abnormal patterns may indicate (educational)</span></div>
-            <div class="output-section"><span class="order">6</span><span class="name">Lifestyle Tips</span><span class="detail">General wellness recommendations related to findings</span></div>
-            <div class="output-section"><span class="order">7</span><span class="name">Disclaimer</span><span class="detail">Mandatory educational-only notice</span></div>
+            <div class="output-section"><span class="order">5</span><span class="name">Clinical Associations</span><span class="detail">Educational associations (not diagnostic)</span></div>
+            <div class="output-section"><span class="order">6</span><span class="name">Lifestyle Tips</span><span class="detail">General wellness recommendations</span></div>
+            <div class="output-section"><span class="order">7</span><span class="name">Disclaimer</span><span class="detail">Mandatory on every output</span></div>
         </div>
-
         <div class="divider"></div>
-
-        <h3>Color Coding System <span class="decision confirmed">CONFIRMED</span></h3>
-        <p>LLM assigns severity categories per test value. System applies consistent color mapping:</p>
+        <h3>Color Coding (Hybrid) <span class="decision">CONFIRMED</span></h3>
+        <p>LLM assigns severity categories. System applies consistent color mapping:</p>
         <div class="color-demo">
             <span class="chip green-chip"><span class="dot"></span> Normal &mdash; Within reference range</span>
             <span class="chip yellow-chip"><span class="dot"></span> Borderline &mdash; Slightly outside range</span>
             <span class="chip red-chip"><span class="dot"></span> Critical &mdash; Significantly abnormal</span>
         </div>
-
         <div class="divider"></div>
-
         <h3>Charts (Matplotlib)</h3>
         <div class="two-col">
-            <div>
-                <span class="sub-label blue">Bar Charts</span>
-                <p>Horizontal bar charts comparing each test value against its reference range. Color-coded bars (green/yellow/red) with reference range overlay.</p>
-            </div>
-            <div>
-                <span class="sub-label purple">Gauge Charts</span>
-                <p>Speedometer-style gauge charts for individual critical/abnormal values showing where the patient's value falls within the overall range.</p>
-            </div>
+            <div><span class="sub-label blue">Bar Charts</span><p>Horizontal bar charts per test category. Each test value vs. reference range. Color-coded green/yellow/red.</p></div>
+            <div><span class="sub-label purple">Gauge Charts</span><p>Speedometer-style for individual critical values. Shows where patient's value falls in overall range.</p></div>
         </div>
-
         <div class="divider"></div>
-
-        <h3>Reference Ranges <span class="decision confirmed">CONFIRMED</span></h3>
+        <h3>Reference Ranges <span class="decision">CONFIRMED</span></h3>
         <div class="callout success">
             <strong>Strategy</strong>
-            LLM extracts reference ranges from the lab report itself. If ranges are not printed on the report, the LLM uses its medical knowledge &mdash; and the output <strong>explicitly states</strong>: "Reference values not available in the report; ranges based on standard medical knowledge."
+            LLM extracts reference ranges from the report. If not present, uses medical knowledge &mdash; output <strong>explicitly states</strong>: "Reference values not available in the report; ranges based on standard medical knowledge."
         </div>
-
         <div class="divider"></div>
-
-        <h3>Translation (v1) <span class="decision confirmed">CONFIRMED</span></h3>
-        <p><strong>Languages:</strong> English + Urdu only</p>
-        <p><strong>Medical terms:</strong> Translated to target language with English in parentheses.</p>
+        <h3>Translation (v1) <span class="decision">CONFIRMED</span></h3>
+        <p><strong>Languages:</strong> English + Urdu &nbsp;|&nbsp; <strong>Medical terms:</strong> Translated + English in parentheses</p>
         <div class="callout info">
             <strong>Example (Urdu)</strong>
             &#x622;&#x67E; &#x6A9;&#x627; &#x6C1;&#x6CC;&#x645;&#x648;&#x6AF;&#x644;&#x648;&#x628;&#x646; (Hemoglobin) &#x644;&#x6CC;&#x648;&#x644; &#x646;&#x627;&#x631;&#x645;&#x644; &#x6C1;&#x6D2;&#x6D4; &#x633;&#x641;&#x6CC;&#x62F; &#x62E;&#x648;&#x646; &#x6A9;&#x6D2; &#x62E;&#x644;&#x6CC;&#x6D2; (WBC) &#x6A9;&#x6CC; &#x62A;&#x639;&#x62F;&#x627;&#x62F; &#x632;&#x6CC;&#x627;&#x62F;&#x6C1; &#x6C1;&#x6D2;&#x6D4;
+        </div>
+        <div class="divider"></div>
+        <h3>Mandatory Disclaimer</h3>
+        <div class="disclaimer-box">
+            <div class="icon">&#9888;</div>
+            <blockquote>"This report provides educational insights and clinical associations only. It is not a diagnosis or treatment recommendation. Please consult a qualified physician."</blockquote>
         </div>
     </div>
 </div>
@@ -981,143 +533,107 @@
         <h2>Configuration Options</h2>
     </div>
     <div class="section-body">
-        <p>All options configurable via environment variables.</p>
+        <p>All options configurable via environment variables (<code>.env</code> file).</p>
         <div class="config-grid">
-            <div class="config-item">
-                <div class="key">MAX_FILE_SIZE</div>
-                <div class="val">Default: <strong>20 MB</strong></div>
-                <div class="desc">Maximum upload file size limit</div>
-            </div>
-            <div class="config-item">
-                <div class="key">MAX_PAGES</div>
-                <div class="val">Default: <strong>30</strong></div>
-                <div class="desc">Maximum page count per report</div>
-            </div>
-            <div class="config-item">
-                <div class="key">RETENTION_PERIOD</div>
-                <div class="val">Default: <strong>24&ndash;48 hours</strong></div>
-                <div class="desc">Auto-deletion of stored files</div>
-            </div>
-            <div class="config-item">
-                <div class="key">VALIDATION_THRESHOLD</div>
-                <div class="val">Default: <strong>0.8</strong></div>
-                <div class="desc">Cheap LLM confidence threshold for lab report validation</div>
-            </div>
-            <div class="config-item">
-                <div class="key">LLM_ANALYSIS_MODEL</div>
-                <div class="val">Default: <strong>gpt-4o</strong></div>
-                <div class="desc">Primary LLM model for report analysis</div>
-            </div>
-            <div class="config-item">
-                <div class="key">LLM_VALIDATION_MODEL</div>
-                <div class="val">Default: <strong>gpt-4o-mini</strong></div>
-                <div class="desc">Cheap LLM for pre-validation step</div>
-            </div>
-            <div class="config-item">
-                <div class="key">LLM_API_KEY</div>
-                <div class="val">Default: <strong>(required)</strong></div>
-                <div class="desc">OpenAI API key (or other provider key)</div>
-            </div>
-            <div class="config-item">
-                <div class="key">OCR_ENGINE</div>
-                <div class="val">Default: <strong>PaddleOCR</strong></div>
-                <div class="desc">OCR engine; alternative: aws_textract</div>
-            </div>
-            <div class="config-item">
-                <div class="key">RATE_LIMIT_PER_IP</div>
-                <div class="val">Default: <strong>10 / hour</strong></div>
-                <div class="desc">Maximum report submissions per IP per hour</div>
-            </div>
-            <div class="config-item">
-                <div class="key">RECAPTCHA_SECRET_KEY</div>
-                <div class="val">Default: <strong>(required)</strong></div>
-                <div class="desc">Google reCAPTCHA v3 server-side secret key</div>
-            </div>
-            <div class="config-item">
-                <div class="key">TWILIO_ACCOUNT_SID</div>
-                <div class="val">Default: <strong>(required for WhatsApp)</strong></div>
-                <div class="desc">Twilio account credentials for WhatsApp integration</div>
-            </div>
-            <div class="config-item">
-                <div class="key">MYSQL_URL</div>
-                <div class="val">Default: <strong>mysql://localhost:3306/labreportai</strong></div>
-                <div class="desc">MySQL connection string for report persistence</div>
-            </div>
+            <div class="config-item"><div class="key">MAX_FILE_SIZE</div><div class="val">Default: <strong>20 MB</strong></div><div class="desc">Maximum upload file size</div></div>
+            <div class="config-item"><div class="key">MAX_PAGES</div><div class="val">Default: <strong>30</strong></div><div class="desc">Maximum page count per report</div></div>
+            <div class="config-item"><div class="key">RETENTION_PERIOD</div><div class="val">Default: <strong>48h</strong></div><div class="desc">Auto-deletion period</div></div>
+            <div class="config-item"><div class="key">VALIDATION_THRESHOLD</div><div class="val">Default: <strong>0.8</strong></div><div class="desc">Pre-validation confidence threshold</div></div>
+            <div class="config-item"><div class="key">LLM_ANALYSIS_MODEL</div><div class="val">Default: <strong>gpt-4o</strong></div><div class="desc">Primary LLM for analysis</div></div>
+            <div class="config-item"><div class="key">LLM_VALIDATION_MODEL</div><div class="val">Default: <strong>gpt-4o-mini</strong></div><div class="desc">Cheap LLM for pre-validation</div></div>
+            <div class="config-item"><div class="key">LLM_API_KEY</div><div class="val"><strong>(required)</strong></div><div class="desc">OpenAI API key</div></div>
+            <div class="config-item"><div class="key">OCR_ENGINE</div><div class="val">Default: <strong>PaddleOCR</strong></div><div class="desc">Alternative: aws_textract</div></div>
+            <div class="config-item"><div class="key">RATE_LIMIT_PER_IP</div><div class="val">Default: <strong>10/hour</strong></div><div class="desc">Max submissions per IP per hour</div></div>
+            <div class="config-item"><div class="key">RECAPTCHA_SECRET_KEY</div><div class="val"><strong>(required)</strong></div><div class="desc">reCAPTCHA v3 server secret</div></div>
+            <div class="config-item"><div class="key">RECAPTCHA_SITE_KEY</div><div class="val"><strong>(required)</strong></div><div class="desc">reCAPTCHA v3 client key</div></div>
+            <div class="config-item"><div class="key">TWILIO_ACCOUNT_SID</div><div class="val"><strong>(required for WhatsApp)</strong></div><div class="desc">Twilio account SID</div></div>
+            <div class="config-item"><div class="key">TWILIO_AUTH_TOKEN</div><div class="val"><strong>(required for WhatsApp)</strong></div><div class="desc">Twilio auth token</div></div>
+            <div class="config-item"><div class="key">TWILIO_WHATSAPP_NUMBER</div><div class="val"><strong>(required for WhatsApp)</strong></div><div class="desc">Twilio WhatsApp sender</div></div>
+            <div class="config-item"><div class="key">MYSQL_URL</div><div class="val">Default: <strong>mysql://localhost:3306/labreportai</strong></div><div class="desc">MySQL connection string</div></div>
+            <div class="config-item"><div class="key">REDIS_URL</div><div class="val">Default: <strong>redis://localhost:6379/0</strong></div><div class="desc">Redis connection string</div></div>
         </div>
     </div>
 </div>
 
-<!-- 8. CONSTRAINTS -->
-<div class="section" id="constraints">
-    <div class="section-header">
-        <span class="num">8</span>
-        <h2>Constraints</h2>
-    </div>
-    <div class="section-body">
-        <table>
-            <thead>
-                <tr><th>Category</th><th>Constraint</th></tr>
-            </thead>
-            <tbody>
-                <tr><td><strong>Stack</strong></td><td>FastAPI, Celery+Redis, PaddleOCR (or Textract), WeasyPrint, LangChain, Matplotlib, Next.js, MySQL</td></tr>
-                <tr><td><strong>Performance</strong></td><td>5&ndash;15 second response time per report</td></tr>
-                <tr><td><strong>Security</strong></td><td>HTTPS required; Google reCAPTCHA v3 for website; per-IP rate limiting</td></tr>
-                <tr><td><strong>Auth</strong></td><td>No user auth for v1; reCAPTCHA only. No API key auth for end users.</td></tr>
-                <tr><td><strong>Language</strong></td><td>English-only input reports; output in English or Urdu (v1)</td></tr>
-                <tr><td><strong>Medical</strong></td><td>No diagnosis or treatment recommendations &mdash; educational only</td></tr>
-                <tr><td><strong>Charts</strong></td><td>Bar + gauge charts from LLM structured JSON, embedded in PDF</td></tr>
-                <tr><td><strong>Deployment</strong></td><td>Docker Compose; file storage via Docker volume</td></tr>
-                <tr><td><strong>Data</strong></td><td>MySQL for report records; Redis for Celery + WhatsApp sessions; temporary file storage (24&ndash;48h)</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- 9. SAFETY -->
+<!-- 8. SAFETY -->
 <div class="section" id="safety">
     <div class="section-header">
-        <span class="num">9</span>
+        <span class="num">8</span>
         <h2>Safety, Security &amp; Privacy</h2>
     </div>
     <div class="section-body">
-
-        <h3>PII Sanitization <span class="decision confirmed">CONFIRMED</span></h3>
-        <p>All personal information is scrubbed from OCR-extracted text <strong>before</strong> sending to the LLM:</p>
+        <h3>PII Sanitization <span class="decision">CONFIRMED</span></h3>
+        <p>All personal info scrubbed from OCR text <strong>before</strong> sending to the LLM:</p>
         <table>
-            <thead>
-                <tr><th>PII Type</th><th>Action</th></tr>
-            </thead>
+            <thead><tr><th>PII Type</th><th>Action</th></tr></thead>
             <tbody>
-                <tr><td>Patient Name</td><td>Removed / replaced with placeholder</td></tr>
+                <tr><td>Patient Name</td><td>Replaced with <code>[REDACTED]</code></td></tr>
                 <tr><td>Patient ID / MRN</td><td>Removed</td></tr>
-                <tr><td>Phone Number</td><td>Removed</td></tr>
+                <tr><td>Phone Number</td><td>Replaced with <code>[PHONE_REDACTED]</code></td></tr>
                 <tr><td>Address</td><td>Removed</td></tr>
-                <tr><td>Date of Birth</td><td>Removed (age is passed separately)</td></tr>
-                <tr><td>Doctor Name</td><td>Removed</td></tr>
-                <tr><td>Hospital / Lab Name</td><td>Removed</td></tr>
+                <tr><td>Date of Birth</td><td>Replaced with <code>[DOB_REDACTED]</code> (age passed separately)</td></tr>
+                <tr><td>Doctor Name</td><td>Replaced with <code>[DOCTOR_REDACTED]</code></td></tr>
+                <tr><td>Hospital / Lab Name</td><td>Replaced with <code>[LAB_REDACTED]</code></td></tr>
             </tbody>
         </table>
-
         <div class="divider"></div>
-
         <h3>Security Measures</h3>
         <ul class="goal-list">
             <li>HTTPS required for all communications</li>
-            <li>Google reCAPTCHA v3 (invisible) on website uploads</li>
-            <li>Per-IP rate limiting (default: 10 requests/hour)</li>
-            <li>Temporary file storage with 24&ndash;48h auto-deletion</li>
-            <li>No permanent storage of uploaded lab reports</li>
+            <li>Google reCAPTCHA v3 (invisible, score-based) on website uploads</li>
+            <li>Per-IP rate limiting &mdash; 10 requests/hour (configurable)</li>
+            <li>No user authentication for v1 &mdash; anonymous usage</li>
+            <li>Temporary file storage with 24&ndash;48h auto-deletion via Celery Beat</li>
+            <li>No permanent storage of uploaded lab reports or generated outputs</li>
         </ul>
+    </div>
+</div>
 
-        <div class="divider"></div>
-
-        <h3>Mandatory Disclaimer</h3>
-        <div class="disclaimer-box">
-            <div class="icon">&#9888;</div>
-            <blockquote>
-                "This report provides educational insights and clinical associations only. It is not a diagnosis or treatment recommendation. Please consult a qualified physician."
-            </blockquote>
+<!-- 9. DATABASE SCHEMA -->
+<div class="section" id="db-schema">
+    <div class="section-header">
+        <span class="num">9</span>
+        <h2>Database Schema</h2>
+    </div>
+    <div class="section-body">
+        <h3>MySQL &mdash; <code>reports</code> Table (v1)</h3>
+        <table>
+            <thead><tr><th>Column</th><th>Type</th><th>Notes</th></tr></thead>
+            <tbody>
+                <tr><td><code>id</code></td><td>VARCHAR(36) PK</td><td>UUID</td></tr>
+                <tr><td><code>job_id</code></td><td>VARCHAR(36) UNIQUE</td><td>Celery task ID</td></tr>
+                <tr><td><code>status</code></td><td>ENUM</td><td>pending, processing, completed, failed</td></tr>
+                <tr><td><code>file_path</code></td><td>VARCHAR(500)</td><td>Path to uploaded file</td></tr>
+                <tr><td><code>file_type</code></td><td>VARCHAR(50)</td><td>MIME type</td></tr>
+                <tr><td><code>age</code></td><td>INTEGER</td><td>Nullable</td></tr>
+                <tr><td><code>gender</code></td><td>VARCHAR(10)</td><td>Nullable</td></tr>
+                <tr><td><code>language</code></td><td>VARCHAR(5)</td><td>Default: en</td></tr>
+                <tr><td><code>ocr_text</code></td><td>LONGTEXT</td><td>Scrubbed OCR text</td></tr>
+                <tr><td><code>result_json</code></td><td>LONGTEXT</td><td>Structured LLM output as JSON</td></tr>
+                <tr><td><code>result_markdown</code></td><td>LONGTEXT</td><td>Rendered markdown</td></tr>
+                <tr><td><code>result_pdf_path</code></td><td>VARCHAR(500)</td><td>Path to generated PDF</td></tr>
+                <tr><td><code>error_message</code></td><td>TEXT</td><td>Error details if failed</td></tr>
+                <tr><td><code>source</code></td><td>ENUM</td><td>web, whatsapp (default: web)</td></tr>
+                <tr><td><code>whatsapp_number</code></td><td>VARCHAR(20)</td><td>Phone number (WhatsApp only)</td></tr>
+                <tr><td><code>ip_address</code></td><td>VARCHAR(45)</td><td>Client IP for rate limiting</td></tr>
+                <tr><td><code>expires_at</code></td><td>DATETIME</td><td>Auto-deletion timestamp</td></tr>
+                <tr><td><code>created_at</code></td><td>DATETIME</td><td>Server default NOW</td></tr>
+                <tr><td><code>updated_at</code></td><td>DATETIME</td><td>On update NOW</td></tr>
+            </tbody>
+        </table>
+        <div class="callout warn" style="margin-top:16px">
+            <strong>Note</strong> User management tables deferred to future versions.
         </div>
+        <div class="divider"></div>
+        <h3>Redis Keys</h3>
+        <table>
+            <thead><tr><th>Key Pattern</th><th>Type</th><th>TTL</th><th>Purpose</th></tr></thead>
+            <tbody>
+                <tr><td><code>celery</code></td><td>Broker</td><td>&mdash;</td><td>Celery broker and result backend</td></tr>
+                <tr><td><code>whatsapp:{phone}</code></td><td>JSON hash</td><td>30 min</td><td>{ state, age, gender, job_id }</td></tr>
+                <tr><td><code>rate_limit:{ip}</code></td><td>Integer</td><td>1 hour</td><td>Request counter per IP</td></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -1130,21 +646,290 @@
     <div class="section-body">
         <ul class="checklist">
             <li><span class="check"></span>Upload PDF/JPG/PNG &rarr; validated &rarr; OCR &rarr; LLM analysis &rarr; Markdown + PDF returned</li>
-            <li><span class="check"></span>WhatsApp flow: sequential Age / Gender / Report capture works correctly via Twilio</li>
-            <li><span class="check"></span>WhatsApp delivers brief text message + PDF attachment (no raw markdown)</li>
+            <li><span class="check"></span>WhatsApp flow: sequential Age / Gender / Report via Twilio &rarr; text + PDF delivered</li>
+            <li><span class="check"></span>WhatsApp sends brief text message + PDF attachment (no raw markdown)</li>
             <li><span class="check"></span>Blurred / low-quality images rejected with re-upload message</li>
-            <li><span class="check"></span>Unsupported lab type rejected with informative error message</li>
-            <li><span class="check"></span>Urdu translation preserves medical terms in parentheses</li>
+            <li><span class="check"></span>Non-lab documents rejected with "not a lab report" message</li>
+            <li><span class="check"></span>Urdu translation preserves medical terms in parenthetical English</li>
             <li><span class="check"></span>Bar + gauge charts accurately reflect abnormal/critical values in PDF</li>
             <li><span class="check"></span>All configuration options applied correctly (file size, pages, LLM model, OCR engine)</li>
-            <li><span class="check"></span>Reference range sources displayed; fallback note shown when ranges not on report</li>
+            <li><span class="check"></span>Reference range sources displayed; fallback note shown when not on report</li>
             <li><span class="check"></span>Disclaimers present on all Markdown and PDF outputs</li>
             <li><span class="check"></span>reCAPTCHA v3 blocks bot submissions on website</li>
-            <li><span class="check"></span>Per-IP rate limiting enforced (10/hour default)</li>
+            <li><span class="check"></span>Per-IP rate limiting enforced &mdash; 11th request returns 429</li>
             <li><span class="check"></span>PII fully scrubbed &mdash; no personal info reaches the LLM</li>
             <li><span class="check"></span>Files auto-deleted after retention period (24&ndash;48h)</li>
-            <li><span class="check"></span>Polling endpoint returns correct status transitions: pending &rarr; processing &rarr; completed/failed</li>
-            <li><span class="check"></span>Docker Compose brings up all services (FastAPI, Celery, Redis, MySQL, Next.js)</li>
+            <li><span class="check"></span>Polling returns correct transitions: pending &rarr; processing &rarr; completed/failed</li>
+            <li><span class="check"></span>Docker Compose starts all services: FastAPI, Celery worker, Celery Beat, Redis, MySQL, Next.js</li>
+        </ul>
+    </div>
+</div>
+
+<!-- 11. PROJECT STRUCTURE -->
+<div class="section" id="structure">
+    <div class="section-header">
+        <span class="num">11</span>
+        <h2>Project Structure</h2>
+    </div>
+    <div class="section-body">
+        <div class="dir-tree"><span class="dir">labreportai/</span>
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── .env.example
+├── .gitignore
+├── README.md
+├── spec.md
+│
+├── <span class="dir">frontend/</span>
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── .env.local.example
+│   └── <span class="dir">src/</span>
+│       ├── <span class="dir">app/</span>
+│       │   ├── layout.tsx
+│       │   ├── page.tsx
+│       │   ├── globals.css
+│       │   └── <span class="dir">report/[jobId]/</span>page.tsx
+│       ├── <span class="dir">components/</span>
+│       │   ├── <span class="dir">ui/</span>              <span class="comment"># shadcn/ui</span>
+│       │   ├── UploadForm.tsx
+│       │   ├── ReportView.tsx
+│       │   ├── StatusPoller.tsx
+│       │   └── DisclaimerBanner.tsx
+│       ├── <span class="dir">lib/</span>
+│       │   ├── api.ts
+│       │   └── utils.ts
+│       └── <span class="dir">types/</span>index.ts
+│
+├── <span class="dir">backend/</span>
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── alembic.ini
+│   ├── <span class="dir">alembic/versions/</span>
+│   ├── <span class="dir">app/</span>
+│   │   ├── main.py              <span class="comment"># FastAPI app</span>
+│   │   ├── config.py            <span class="comment"># Pydantic Settings</span>
+│   │   ├── dependencies.py
+│   │   ├── <span class="dir">api/</span>
+│   │   │   ├── router.py
+│   │   │   ├── <span class="dir">v1/</span>
+│   │   │   │   ├── reports.py   <span class="comment"># POST /analyze, GET /status, GET /download</span>
+│   │   │   │   ├── whatsapp.py  <span class="comment"># Twilio webhook</span>
+│   │   │   │   └── health.py    <span class="comment"># GET /health</span>
+│   │   │   └── middleware.py    <span class="comment"># rate limiting, CORS</span>
+│   │   ├── <span class="dir">models/</span>report.py    <span class="comment"># SQLAlchemy model</span>
+│   │   ├── <span class="dir">schemas/</span>report.py   <span class="comment"># Pydantic schemas</span>
+│   │   ├── <span class="dir">services/</span>
+│   │   │   ├── ocr.py           <span class="comment"># PaddleOCR</span>
+│   │   │   ├── pii_scrubber.py  <span class="comment"># Regex PII removal</span>
+│   │   │   ├── llm_validator.py <span class="comment"># GPT-4o-mini pre-validate</span>
+│   │   │   ├── llm_analyzer.py  <span class="comment"># GPT-4o analysis</span>
+│   │   │   ├── translator.py    <span class="comment"># EN → UR translation</span>
+│   │   │   ├── chart_generator.py <span class="comment"># Matplotlib</span>
+│   │   │   ├── pdf_generator.py <span class="comment"># WeasyPrint</span>
+│   │   │   ├── markdown_renderer.py
+│   │   │   ├── file_validator.py
+│   │   │   ├── file_cleanup.py
+│   │   │   └── whatsapp_sender.py <span class="comment"># Twilio outbound</span>
+│   │   ├── <span class="dir">tasks/</span>
+│   │   │   ├── celery_app.py
+│   │   │   ├── analyze.py       <span class="comment"># Main pipeline task</span>
+│   │   │   └── cleanup.py       <span class="comment"># Periodic cleanup</span>
+│   │   ├── <span class="dir">db/</span>session.py      <span class="comment"># SQLAlchemy engine</span>
+│   │   └── <span class="dir">utils/</span>
+│   │       ├── logging.py
+│   │       └── recaptcha.py
+│   ├── <span class="dir">prompts/</span>
+│   │   ├── pre_validation.txt
+│   │   ├── analysis.txt
+│   │   └── translation.txt
+│   └── <span class="dir">tests/</span>
+│       ├── conftest.py
+│       ├── <span class="dir">fixtures/</span>
+│       └── <span class="dir">e2e/</span>
+│
+├── <span class="dir">templates/pdf/</span>
+│   ├── report.html              <span class="comment"># Jinja2 for WeasyPrint</span>
+│   └── styles.css
+│
+└── <span class="dir">storage/</span>                  <span class="comment"># Docker volume mount</span>
+    ├── <span class="dir">uploads/</span>
+    └── <span class="dir">outputs/</span></div>
+    </div>
+</div>
+
+<!-- 12. IMPLEMENTATION PLAN -->
+<div class="section" id="implementation">
+    <div class="section-header">
+        <span class="num">12</span>
+        <h2>Implementation Plan (7 Phases)</h2>
+    </div>
+    <div class="section-body">
+        <div class="callout info">
+            <strong>Development Approach</strong>
+            Vertical slices &mdash; each phase delivers a working increment. Minimal unit tests per phase; comprehensive E2E tests in Phase 7. SQLAlchemy + Alembic for database migrations.
+        </div>
+
+        <div class="phase-card phase-1">
+            <div class="phase-header"><span class="phase-num">1</span><span class="phase-title">Foundation &amp; Infrastructure</span><span class="phase-goal">Stub end-to-end loop</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li>Monorepo scaffold: <code>/frontend</code> (Next.js + Tailwind + shadcn/ui), <code>/backend</code> (FastAPI)</li>
+                    <li><code>docker-compose.yml</code> &mdash; backend, celery-worker, redis, mysql, frontend</li>
+                    <li>SQLAlchemy + Alembic setup; initial migration creates <code>reports</code> table</li>
+                    <li>Pydantic Settings (<code>config.py</code>) reading env vars; <code>.env.example</code></li>
+                    <li><code>POST /v1/analyze-report</code> &rarr; saves file, creates DB row, dispatches Celery task, returns job_id</li>
+                    <li><code>GET /v1/status/{job_id}</code> &rarr; returns status + results</li>
+                    <li>Stub Celery task: sleeps 3s, updates DB to completed with placeholder markdown</li>
+                    <li>File validation service (type, size, page count)</li>
+                    <li>Next.js upload form &rarr; polling &rarr; basic result display</li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> <code>docker-compose up</code> &rarr; upload a file &rarr; see placeholder result after ~3s. Invalid files rejected.</div>
+            </div>
+        </div>
+
+        <div class="phase-card phase-2">
+            <div class="phase-header"><span class="phase-num">2</span><span class="phase-title">OCR, PII Scrubbing &amp; Pre-Validation</span><span class="phase-goal">Real text extraction</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li><code>ocr.py</code> &mdash; PaddleOCR wrapper (images + PDFs via pdf2image). Garbage text heuristic.</li>
+                    <li><code>pii_scrubber.py</code> &mdash; Regex-based scrubbing for all 7 PII categories</li>
+                    <li><code>llm_validator.py</code> &mdash; LangChain + GPT-4o-mini pre-validation</li>
+                    <li><code>prompts/pre_validation.txt</code> &mdash; Document classification prompt</li>
+                    <li>Replace stub task with real pipeline: OCR &rarr; PII scrub &rarr; pre-validate</li>
+                    <li>Alembic migration: add <code>ocr_text</code> column</li>
+                    <li>Minimal tests: <code>test_pii_scrubber.py</code>, <code>test_ocr.py</code></li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> Upload real lab report &rarr; see scrubbed text. Upload receipt &rarr; rejected. Blurred image &rarr; rejected.</div>
+            </div>
+        </div>
+
+        <div class="phase-card phase-3">
+            <div class="phase-header"><span class="phase-num">3</span><span class="phase-title">LLM Analysis (Core Intelligence)</span><span class="phase-goal">Full interpretation</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li><code>llm_analyzer.py</code> &mdash; LangChain + GPT-4o. Structured JSON output with output parsers. Retry logic.</li>
+                    <li><code>prompts/analysis.txt</code> &mdash; Main analysis prompt (most critical file in the system)</li>
+                    <li>Structured JSON schema: patient_info, summary, categories[], abnormal_analysis, clinical_associations, lifestyle_tips, disclaimer</li>
+                    <li><code>markdown_renderer.py</code> &mdash; JSON &rarr; formatted markdown with color indicators</li>
+                    <li>Frontend: <code>react-markdown</code> + <code>remark-gfm</code> rendering with color badges</li>
+                    <li>Alembic migration: add <code>result_json</code> column</li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> Upload CBC report &rarr; see full 7-section interpretation with color-coded tables, severity labels, reference ranges, disclaimer.</div>
+            </div>
+        </div>
+
+        <div class="phase-card phase-4">
+            <div class="phase-header"><span class="phase-num">4</span><span class="phase-title">Charts &amp; PDF Generation</span><span class="phase-goal">Downloadable PDF</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li><code>chart_generator.py</code> &mdash; Matplotlib bar charts (value vs range, color-coded) + gauge charts (speedometer for critical values)</li>
+                    <li><code>pdf_generator.py</code> &mdash; WeasyPrint HTML &rarr; PDF with Jinja2 template</li>
+                    <li><code>templates/pdf/report.html</code> + <code>styles.css</code> &mdash; Professional layout, color tables, embedded charts</li>
+                    <li><code>GET /v1/download/{job_id}</code> &mdash; PDF file response</li>
+                    <li>Frontend: "Download PDF Report" button</li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> Upload report &rarr; download PDF &rarr; professional layout, bar charts, gauge charts, color tables, all 7 sections, disclaimer.</div>
+            </div>
+        </div>
+
+        <div class="phase-card phase-5">
+            <div class="phase-header"><span class="phase-num">5</span><span class="phase-title">Security, Rate Limiting &amp; Cleanup</span><span class="phase-goal">Production hardening</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li><code>recaptcha.py</code> &mdash; Google reCAPTCHA v3 verification (backend + frontend integration)</li>
+                    <li><code>middleware.py</code> &mdash; Redis-based per-IP rate limiter (INCR + EXPIRE). Returns 429.</li>
+                    <li><code>file_cleanup.py</code> + <code>tasks/cleanup.py</code> &mdash; Celery Beat periodic cleanup (hourly)</li>
+                    <li>Add <code>celery-beat</code> service to Docker Compose</li>
+                    <li>Global exception handlers: consistent error JSON for 422, 429, 500</li>
+                    <li>Alembic migration: add <code>expires_at</code> column</li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> reCAPTCHA blocks invalid tokens. 11th request &rarr; 429. Old files auto-deleted by Celery Beat.</div>
+            </div>
+        </div>
+
+        <div class="phase-card phase-6">
+            <div class="phase-header"><span class="phase-num">6</span><span class="phase-title">Translation &amp; WhatsApp Integration</span><span class="phase-goal">Both interfaces live</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li><code>translator.py</code> &mdash; English &rarr; Urdu via LLM. Medical terms + English in parentheses.</li>
+                    <li><code>prompts/translation.txt</code> &mdash; Translation prompt with term preservation rules</li>
+                    <li>RTL support in PDF template; Urdu fonts in Docker image</li>
+                    <li><code>v1/whatsapp.py</code> &mdash; Twilio webhook. Redis state machine: AWAITING_AGE &rarr; GENDER &rarr; REPORT &rarr; PROCESSING</li>
+                    <li><code>whatsapp_sender.py</code> &mdash; Twilio outbound: text message + PDF media</li>
+                    <li>Alembic migration: add <code>source</code> + <code>whatsapp_number</code> columns</li>
+                    <li>Redis session keys with 30-minute TTL</li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> Website Urdu translation works. WhatsApp: age &rarr; gender &rarr; photo &rarr; receive text + PDF.</div>
+            </div>
+        </div>
+
+        <div class="phase-card phase-7">
+            <div class="phase-header"><span class="phase-num">7</span><span class="phase-title">E2E Testing, Polish &amp; Production</span><span class="phase-goal">Deployment ready</span></div>
+            <div class="phase-body">
+                <ul>
+                    <li>Comprehensive E2E test suite: 16 scenarios (web + WhatsApp)</li>
+                    <li>Error handling hardening: specific messages per failure; graceful degradation</li>
+                    <li>Logging audit: no PII or sensitive data in logs</li>
+                    <li>Frontend polish: drag-drop, progress steps, responsive, accessible, "Upload Another"</li>
+                    <li><code>GET /v1/health</code> &mdash; Health check (MySQL, Redis, Celery connectivity)</li>
+                    <li><code>docker-compose.prod.yml</code> &mdash; Multi-stage builds, uvicorn 4 workers, health checks, restart policies</li>
+                    <li><code>README.md</code> &mdash; Setup, architecture, env vars, API docs, troubleshooting</li>
+                </ul>
+                <div class="phase-verify"><strong>Verify:</strong> All tests pass. Manual testing on web + mobile + WhatsApp. <code>GET /health</code> returns healthy. Docker logs clean.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 13. DEPENDENCY CHAIN -->
+<div class="section" id="dependencies">
+    <div class="section-header">
+        <span class="num">13</span>
+        <h2>Phase Dependency Chain</h2>
+    </div>
+    <div class="section-body">
+        <div class="dep-chain">
+            <div class="dep-node" style="border-color:#3b82f6">Phase 1: Foundation &amp; Infrastructure</div>
+            <div class="dep-arrow">&#9660;</div>
+            <div class="dep-node" style="border-color:#ec4899">Phase 2: OCR, PII Scrubbing &amp; Pre-Validation</div>
+            <div class="dep-arrow">&#9660;</div>
+            <div class="dep-node" style="border-color:#8b5cf6">Phase 3: LLM Analysis (Core Intelligence)</div>
+            <div class="dep-arrow">&#9660;</div>
+            <div class="dep-node" style="border-color:#f59e0b">Phase 4: Charts &amp; PDF Generation</div>
+            <div class="dep-arrow">&#9660;</div>
+            <div class="dep-node" style="border-color:#ef4444">Phase 5: Security, Rate Limiting &amp; Cleanup</div>
+            <div class="dep-arrow">&#9660;</div>
+            <div class="dep-node" style="border-color:#10b981">Phase 6: Translation &amp; WhatsApp Integration</div>
+            <div class="dep-arrow">&#9660;</div>
+            <div class="dep-node" style="border-color:#6366f1">Phase 7: E2E Testing, Polish &amp; Production</div>
+        </div>
+        <div class="callout info" style="margin-top:16px">
+            <strong>Milestone Summary</strong>
+            After Phase 1: working stub loop. After Phase 4: full website pipeline with real analysis. Phase 5&ndash;6: security + secondary interface. Phase 7: production ready.
+        </div>
+    </div>
+</div>
+
+<!-- 14. FUTURE -->
+<div class="section" id="future">
+    <div class="section-header">
+        <span class="num">14</span>
+        <h2>Future Considerations (Post-v1)</h2>
+    </div>
+    <div class="section-body">
+        <ul class="future-list">
+            <li>User accounts and authentication (registration/login, report history)</li>
+            <li>Additional languages beyond English + Urdu</li>
+            <li>CI/CD pipeline (GitHub Actions: lint, test, build, deploy)</li>
+            <li>AWS S3 file storage option (for production scalability)</li>
+            <li>Mobile app</li>
+            <li>EHR/EMR integration</li>
+            <li>Advanced analytics dashboard</li>
+            <li>Multi-language input report support</li>
         </ul>
     </div>
 </div>
@@ -1152,7 +937,7 @@
 </div><!-- container -->
 
 <div class="footer">
-    Lab Report AI &middot; Specification v2.1 &middot; Updated with Q&amp;A Decisions &middot; For Development Reference Only
+    Lab Report AI &middot; Specification v2.1 &middot; 14 Sections &middot; 7-Phase Implementation Plan &middot; For Development Reference Only
 </div>
 
 </body>
