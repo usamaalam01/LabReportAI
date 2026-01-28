@@ -9,7 +9,12 @@
       "Bash(git config:*)",
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)",
+      "Bash(cmd.exe /c \"start \"\"\"\" \"\"C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe\"\"\")",
+      "Bash(curl:*)",
+      "Bash(python3:*)"
     ]
   }
 }

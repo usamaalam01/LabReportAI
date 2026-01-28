@@ -1,0 +1,39 @@
+# FastAPI & Server
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# Database
+sqlalchemy[asyncio]==2.0.36
+aiomysql==0.2.0
+pymysql==1.1.1
+cryptography==44.0.0
+alembic==1.14.1
+
+# Redis & Celery
+celery[redis]==5.4.0
+redis==5.2.1
+
+# Configuration
+pydantic-settings==2.7.1
+
+# File handling
+python-magic==0.4.27
+PyPDF2==3.0.1
+
+# LLM (Phase 2+)
+# langchain==0.3.x
+# langchain-openai==0.3.x
+# openai==1.x
+
+# OCR (Phase 2+)
+# paddleocr
+# pdf2image
+
+# PDF Generation (Phase 4+)
+# weasyprint
+# jinja2
+# matplotlib
+
+# Utilities
+httpx==0.28.1

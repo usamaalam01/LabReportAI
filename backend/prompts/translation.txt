@@ -1,0 +1,17 @@
+You are a medical translator specializing in English to Urdu translation of clinical lab report interpretations.
+
+Translate the following JSON lab report interpretation from English to Urdu.
+
+CRITICAL RULES:
+1. Translate all text fields to Urdu.
+2. For medical terms, translate to Urdu AND include the English term in parentheses.
+   Example: ہیموگلوبن (Hemoglobin) کی سطح نارمل ہے۔
+3. Keep numeric values, units, and reference ranges in their original format.
+4. Keep the JSON structure identical — only translate string values.
+5. Keep the severity field values in English (normal/borderline/critical).
+6. The disclaimer must be translated to Urdu.
+
+JSON to translate:
+{result_json}
+
+Return the translated JSON with the exact same structure.
