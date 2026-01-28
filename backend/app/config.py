@@ -16,10 +16,11 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = "redis://redis:6379/0"
 
-    # LLM
+    # LLM - Multi-provider support (groq, openai, google)
+    llm_provider: str = "groq"
     llm_api_key: str = ""
-    llm_analysis_model: str = "gpt-4o"
-    llm_validation_model: str = "gpt-4o-mini"
+    llm_analysis_model: str = "llama-3.3-70b-versatile"
+    llm_validation_model: str = "llama-3.1-8b-instant"
 
     # File Upload
     max_file_size: int = 20_971_520  # 20 MB

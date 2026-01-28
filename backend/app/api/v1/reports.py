@@ -76,9 +76,10 @@ async def submit_report(
         expires_at=datetime.now(timezone.utc) + timedelta(hours=settings.retention_period),
     )
     db.add(report)
-    await db.flush()
+    await db.commit()
+    await db.refresh(report)
 
-    report_id = report.id
+    report_id = str(report.id)
 
     # Dispatch Celery task
     analyze_report.delay(report_id)

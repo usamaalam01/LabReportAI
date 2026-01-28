@@ -17,8 +17,8 @@ Text to classify:
 {ocr_text}
 
 Respond in JSON format:
-{
+{{
   "is_lab_report": true/false,
   "confidence": 0.0-1.0,
   "reason": "..."
-}
+}}

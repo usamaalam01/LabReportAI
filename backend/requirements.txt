@@ -21,14 +21,17 @@ pydantic-settings==2.7.1
 python-magic==0.4.27
 PyPDF2==3.0.1
 
-# LLM (Phase 2+)
-# langchain==0.3.x
-# langchain-openai==0.3.x
-# openai==1.x
+# LLM - Multi-provider support
+langchain>=0.3.14
+langchain-groq>=0.2.4
+langchain-openai>=0.3.0
+langchain-google-genai>=2.0.8
 
-# OCR (Phase 2+)
-# paddleocr
-# pdf2image
+# OCR
+paddleocr==2.9.1
+paddlepaddle==3.0.0b1
+pdf2image==1.17.0
+Pillow==11.1.0
 
 # PDF Generation (Phase 4+)
 # weasyprint
@@ -37,3 +40,4 @@ PyPDF2==3.0.1
 
 # Utilities
 httpx==0.28.1
+setuptools>=75.0.0
