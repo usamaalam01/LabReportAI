@@ -3,11 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <title>Lab Report AI - Analysis Report</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        {{ css_content | safe }}
+    </style>
 </head>
 <body>
-    <!-- PDF template stub - will be implemented in Phase 4 -->
-    <h1>Lab Report Analysis</h1>
-    <p>PDF template will be implemented in Phase 4 (Charts & PDF Generation).</p>
+
+    <!-- Title -->
+    <h1 class="report-title">Lab Report Analysis</h1>
+
+    <!-- Patient Information -->
+    <section class="patient-info">
+        <h2>Patient Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Age:</span>
+                <span class="info-value">{{ analysis.patient_info.age or 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Gender:</span>
+                <span class="info-value">{{ analysis.patient_info.gender or 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Report Date:</span>
+                <span class="info-value">{{ analysis.patient_info.report_date or 'N/A' }}</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="summary">
+        <h2>Summary</h2>
+        <p>{{ analysis.summary or 'No summary available.' }}</p>
+    </section>
+
+    <!-- Test Results -->
+    <section class="test-results">
+        <h2>Test Results</h2>
+
+        {% for category in analysis.categories %}
+        <div class="category-block">
+            <h3>{{ category.name }}</h3>
+
+            {% if category.tests %}
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th class="col-status">Status</th>
+                        <th class="col-test">Test</th>
+                        <th class="col-value">Value</th>
+                        <th class="col-unit">Unit</th>
+                        <th class="col-ref">Reference Range</th>
+                        <th class="col-interp">Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for test in category.tests %}
+                    <tr class="severity-{{ test.severity }}">
+                        <td class="col-status">
+                            <span class="severity-dot severity-{{ test.severity }}">&#9679;</span>
+                        </td>
+                        <td class="col-test">{{ test.test_name }}</td>
+                        <td class="col-value">{{ test.value }}</td>
+                        <td class="col-unit">{{ test.unit or '' }}</td>
+                        <td class="col-ref">
+                            {{ test.reference_range or 'N/A' }}
+                            {% if test.reference_source == 'standard_knowledge' %}
+                            <span class="ref-note">*</span>
+                            {% endif %}
+                        </td>
+                        <td class="col-interp">{{ test.interpretation or '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% set has_standard = [] %}
+            {% for test in category.tests %}
+                {% if test.reference_source == 'standard_knowledge' %}
+                    {% if has_standard.append(1) %}{% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if has_standard %}
+            <p class="ref-footnote">* Reference values not available in the report; ranges based on standard medical knowledge.</p>
+            {% endif %}
+
+            <!-- Charts for this category -->
+            {% set cat_idx = loop.index0 %}
+            {% if charts.get(cat_idx) %}
+                {% if charts[cat_idx].bar %}
+                <div class="chart-container">
+                    <img src="file://{{ charts[cat_idx].bar }}" class="chart-bar" alt="Bar chart for {{ category.name }}">
+                </div>
+                {% endif %}
+
+                {% if charts[cat_idx].gauges %}
+                <div class="gauge-container">
+                    {% for gauge_path in charts[cat_idx].gauges %}
+                    <img src="file://{{ gauge_path }}" class="chart-gauge" alt="Gauge chart">
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% else %}
+            <p class="no-tests">No tests in this category.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Abnormal Value Analysis -->
+    {% if analysis.abnormal_analysis %}
+    <section class="abnormal-analysis">
+        <h2>Abnormal Value Analysis</h2>
+        <p>{{ analysis.abnormal_analysis }}</p>
+    </section>
+    {% endif %}
+
+    <!-- Clinical Associations -->
+    {% if analysis.clinical_associations %}
+    <section class="clinical-associations">
+        <h2>Clinical Associations</h2>
+        <p>{{ analysis.clinical_associations }}</p>
+    </section>
+    {% endif %}
+
+    <!-- Lifestyle Recommendations -->
+    {% if analysis.lifestyle_tips %}
+    <section class="lifestyle-tips">
+        <h2>Lifestyle Recommendations</h2>
+        <p>{{ analysis.lifestyle_tips }}</p>
+    </section>
+    {% endif %}
+
+    <!-- Disclaimer -->
+    <section class="disclaimer">
+        <div class="disclaimer-box">
+            <strong>Disclaimer:</strong> {{ disclaimer }}
+        </div>
+    </section>
+
 </body>
 </html>

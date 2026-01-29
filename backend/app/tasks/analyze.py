@@ -1,6 +1,6 @@
 """Report analysis Celery task.
 
-Pipeline: OCR → PII scrub → pre-validate → LLM analysis → markdown render.
+Pipeline: OCR → PII scrub → pre-validate → LLM analysis → markdown render → charts → PDF.
 """
 import json
 import logging
@@ -11,7 +11,9 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.db.session import sync_engine
 from app.models.report import Report, ReportStatus
+from app.services.chart_generator import generate_charts_for_report
 from app.services.llm_analyzer import AnalysisError, analyze_lab_report
+from app.services.pdf_generator import PDFGenerationError, generate_pdf
 from app.services.llm_validator import (
     ValidationError,
     check_validation_threshold,
@@ -35,6 +37,8 @@ def analyze_report(self, report_id: str) -> dict:
     3. Pre-validation (LLM checks if it's a lab report)
     4. LLM analysis (structured JSON interpretation)
     5. Markdown rendering from analysis JSON
+    6. Chart generation (Matplotlib bar + gauge)
+    7. PDF generation (WeasyPrint)
     """
     logger.info(f"Starting analysis for report_id={report_id}")
     settings = get_settings()
@@ -117,7 +121,33 @@ def analyze_report(self, report_id: str) -> dict:
             logger.info("Step 5: Rendering markdown")
             markdown = render_analysis_markdown(analysis_result)
 
-            # Store both structured JSON and rendered markdown
+            # Step 6: Generate charts (non-fatal on failure)
+            logger.info("Step 6: Generating charts")
+            charts = {}
+            try:
+                charts = generate_charts_for_report(
+                    analysis_result, report.job_id
+                )
+                logger.info(f"Charts generated for {len(charts)} categories")
+            except Exception as e:
+                logger.warning(f"Chart generation failed (non-fatal): {e}")
+
+            # Step 7: Generate PDF (non-fatal on failure)
+            logger.info("Step 7: Generating PDF")
+            try:
+                pdf_path = generate_pdf(
+                    analysis_result, charts, report.job_id
+                )
+                report.result_pdf_path = pdf_path
+                logger.info(f"PDF generated: {pdf_path}")
+            except PDFGenerationError as e:
+                logger.warning(
+                    f"PDF generation failed (non-fatal): {e.message}"
+                )
+            except Exception as e:
+                logger.warning(f"PDF generation failed (non-fatal): {e}")
+
+            # Store results (markdown always saved, PDF path only if generated)
             report.status = ReportStatus.COMPLETED
             report.result_json = json.dumps(analysis_result, ensure_ascii=False)
             report.result_markdown = markdown

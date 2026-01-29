@@ -1,5 +1,240 @@
-/* PDF styles stub - will be implemented in Phase 4 */
+/* Lab Report AI - PDF Styles (WeasyPrint optimized) */
+
+/* Page setup with header and footer */
+@page {
+    size: A4;
+    margin: 2cm 1.5cm 2.5cm 1.5cm;
+
+    @top-center {
+        content: "Lab Report AI - Analysis Report";
+        font-family: 'DejaVu Sans', Arial, sans-serif;
+        font-size: 9pt;
+        color: #6b7280;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 4mm;
+    }
+
+    @bottom-center {
+        content: "Page " counter(page) " of " counter(pages) "  |  For educational purposes only. Not a medical diagnosis.";
+        font-family: 'DejaVu Sans', Arial, sans-serif;
+        font-size: 7pt;
+        color: #9ca3af;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 4mm;
+    }
+}
+
+/* Base styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 2cm;
+    font-family: 'DejaVu Sans', Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: #1f2937;
+    margin: 0;
+    padding: 0;
+}
+
+/* Headings */
+h1.report-title {
+    font-size: 20pt;
+    color: #111827;
+    margin: 0 0 8mm 0;
+    padding-bottom: 4mm;
+    border-bottom: 2px solid #3b82f6;
+}
+
+h2 {
+    font-size: 14pt;
+    color: #1e40af;
+    margin: 6mm 0 3mm 0;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid #dbeafe;
+}
+
+h3 {
+    font-size: 12pt;
+    color: #374151;
+    margin: 4mm 0 2mm 0;
+}
+
+/* Patient Information */
+.patient-info {
+    margin-bottom: 5mm;
+}
+
+.info-grid {
+    display: flex;
+    gap: 10mm;
+}
+
+.info-item {
+    display: inline-block;
+    margin-right: 10mm;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #4b5563;
+}
+
+.info-value {
+    color: #1f2937;
+}
+
+/* Summary */
+.summary p {
+    color: #374151;
+    text-align: justify;
+}
+
+/* Results Table */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3mm 0;
+    font-size: 9pt;
+}
+
+.results-table thead tr {
+    background-color: #f3f4f6;
+}
+
+.results-table th {
+    padding: 2mm 3mm;
+    text-align: left;
+    font-weight: bold;
+    color: #374151;
+    border-bottom: 2px solid #d1d5db;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+}
+
+.results-table td {
+    padding: 2mm 3mm;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+}
+
+.results-table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* Column widths */
+.col-status { width: 8%; text-align: center; }
+.col-test { width: 18%; }
+.col-value { width: 10%; text-align: right; font-weight: bold; }
+.col-unit { width: 8%; }
+.col-ref { width: 18%; }
+.col-interp { width: 38%; font-size: 8.5pt; }
+
+/* Severity dots */
+.severity-dot {
+    font-size: 14pt;
+    line-height: 1;
+}
+
+.severity-dot.severity-normal {
+    color: #22c55e;
+}
+
+.severity-dot.severity-borderline {
+    color: #eab308;
+}
+
+.severity-dot.severity-critical {
+    color: #ef4444;
+}
+
+/* Row highlighting for abnormal values */
+tr.severity-borderline {
+    background-color: #fefce8 !important;
+}
+
+tr.severity-critical {
+    background-color: #fef2f2 !important;
+}
+
+/* Reference footnote */
+.ref-footnote {
+    font-size: 8pt;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1mm 0 3mm 0;
+}
+
+.ref-note {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.no-tests {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* Category block - avoid page breaks in the middle */
+.category-block {
+    page-break-inside: avoid;
+    margin-bottom: 6mm;
+}
+
+/* Charts */
+.chart-container {
+    margin: 4mm 0;
+    text-align: center;
+    page-break-inside: avoid;
+}
+
+.chart-bar {
+    max-width: 100%;
+    height: auto;
+}
+
+.gauge-container {
+    margin: 3mm 0;
+    text-align: center;
+    page-break-inside: avoid;
+}
+
+.chart-gauge {
+    display: inline-block;
+    width: 180px;
+    height: auto;
+    margin: 2mm 4mm;
+}
+
+/* Text sections */
+.abnormal-analysis,
+.clinical-associations,
+.lifestyle-tips {
+    margin-bottom: 4mm;
+}
+
+.abnormal-analysis p,
+.clinical-associations p,
+.lifestyle-tips p {
+    color: #374151;
+    text-align: justify;
+    white-space: pre-line;
+}
+
+/* Disclaimer */
+.disclaimer {
+    margin-top: 8mm;
+    page-break-inside: avoid;
+}
+
+.disclaimer-box {
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-left: 4px solid #3b82f6;
+    padding: 4mm 5mm;
+    font-size: 8.5pt;
+    color: #4b5563;
+    border-radius: 2px;
+}
+
+.disclaimer-box strong {
+    color: #1f2937;
 }

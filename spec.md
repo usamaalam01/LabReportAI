@@ -172,8 +172,14 @@ LLM assigns severity categories per test value. System applies consistent color 
 **Severity indicators in markdown:** Use emoji circles (🟢 🟡 🔴) for universal rendering in markdown, web, and terminals. Frontend renders backend-generated markdown via `react-markdown` (not custom React components from JSON).
 
 ### Charts
-- **Bar charts** — Horizontal bars per test category. Each test value vs. reference range. Color-coded green/yellow/red.
-- **Gauge charts** — Speedometer-style for individual critical/abnormal values. Shows where patient's value falls within the overall range.
+- **Bar charts** — Horizontal bars per test category. Each test value vs. reference range. Color-coded green/yellow/red. Only generated for numeric test values (string values like "Positive" are skipped).
+- **Gauge charts** — Speedometer-style for both **critical and borderline** values. Shows where patient's value falls within the overall range. Only for numeric values.
+- **Placement in PDF** — Charts placed inline after each category table (bar chart → gauge charts for that category's abnormal values).
+
+### PDF Layout
+- **Header** on each page: "Lab Report AI - Analysis Report"
+- **Footer** on each page: page number + brief disclaimer note
+- Professional, clean layout with color-coded table rows
 
 ### Reference Ranges
 - LLM extracts reference ranges from the lab report text.

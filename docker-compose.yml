@@ -36,6 +36,7 @@ services:
       - .env
     volumes:
       - ./backend:/app
+      - ./templates:/app/templates
       - storage_data:/app/storage
     depends_on:
       mysql:
@@ -56,6 +57,7 @@ services:
       - .env
     volumes:
       - ./backend:/app
+      - ./templates:/app/templates
       - storage_data:/app/storage
     depends_on:
       mysql:
