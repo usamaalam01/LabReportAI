@@ -3,6 +3,8 @@
 import type { ReportStatusResponse } from "@/types";
 import { getDownloadUrl } from "@/lib/api";
 import DisclaimerBanner from "./DisclaimerBanner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ReportViewProps {
   data: ReportStatusResponse;
@@ -15,12 +17,11 @@ export default function ReportView({ data }: ReportViewProps) {
 
       {/* Markdown result */}
       <div className="rounded-lg border bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-xl font-semibold text-gray-800">
-          Report Analysis
-        </h2>
         {data.result_markdown ? (
-          <div className="prose prose-sm max-w-none whitespace-pre-wrap text-gray-700">
-            {data.result_markdown}
+          <div className="prose prose-sm max-w-none text-gray-700">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {data.result_markdown}
+            </ReactMarkdown>
           </div>
         ) : (
           <p className="text-gray-500">No analysis content available.</p>

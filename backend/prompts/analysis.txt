@@ -11,7 +11,7 @@ Patient context:
 Lab Report Text:
 {ocr_text}
 
-Provide your analysis as a JSON object with this exact structure:
+Provide your analysis as a JSON object with this exact structure. Return ONLY the JSON object with no additional text, explanation, or markdown formatting.
 {{
   "patient_info": {{
     "age": null or integer,
@@ -25,9 +25,9 @@ Provide your analysis as a JSON object with this exact structure:
       "tests": [
         {{
           "test_name": "Test Name",
-          "value": numeric_value,
-          "unit": "unit string",
-          "reference_range": "low - high",
+          "value": numeric_or_string_value,
+          "unit": "unit string or empty string if not applicable",
+          "reference_range": "low - high or descriptive range",
           "reference_source": "report" or "standard_knowledge",
           "severity": "normal" or "borderline" or "critical",
           "interpretation": "Brief explanation"
@@ -35,7 +35,7 @@ Provide your analysis as a JSON object with this exact structure:
       ]
     }}
   ],
-  "abnormal_analysis": "Detailed explanation of all out-of-range values",
+  "abnormal_analysis": "Detailed explanation of all out-of-range values. If all values are normal, state that.",
   "clinical_associations": "Educational associations between findings (not diagnostic)",
   "lifestyle_tips": "General wellness recommendations related to findings",
   "disclaimer": "This report provides educational insights and clinical associations only. It is not a diagnosis or treatment recommendation. Please consult a qualified physician."
@@ -47,3 +47,5 @@ Rules:
 3. Group tests by category (CBC, Liver Panel, Kidney Panel, Thyroid, Lipid Profile, etc.).
 4. Always include the disclaimer.
 5. Be thorough but concise in interpretations.
+6. The "value" field can be a number (e.g., 13.5) or a string (e.g., "Positive", "Negative", "A+", "Non-Reactive"). Use whichever is appropriate for the test.
+7. Return ONLY valid JSON. Do not wrap in markdown code blocks.

@@ -165,9 +165,11 @@ The **Lab Report AI Interpretation API** is a full-stack system designed to:
 
 ### Color Coding (Hybrid)
 LLM assigns severity categories per test value. System applies consistent color mapping:
-- **Green (Normal)** — Within reference range
-- **Yellow (Borderline)** — Slightly outside reference range
-- **Red (Critical)** — Significantly abnormal
+- 🟢 **Green (Normal)** — Within reference range
+- 🟡 **Yellow (Borderline)** — Slightly outside reference range
+- 🔴 **Red (Critical)** — Significantly abnormal
+
+**Severity indicators in markdown:** Use emoji circles (🟢 🟡 🔴) for universal rendering in markdown, web, and terminals. Frontend renders backend-generated markdown via `react-markdown` (not custom React components from JSON).
 
 ### Charts
 - **Bar charts** — Horizontal bars per test category. Each test value vs. reference range. Color-coded green/yellow/red.
@@ -473,6 +475,8 @@ Development follows a **vertical slice** approach — each phase delivers a work
             "severity": "normal | borderline | critical",
             "interpretation": "..."
           }
+          // Note: `value` supports both numeric (12.5) and string ("Positive", "Reactive", "1+")
+          // for qualitative lab results.
         ]
       }
     ],
@@ -482,10 +486,11 @@ Development follows a **vertical slice** approach — each phase delivers a work
     "disclaimer": "..."
   }
   ```
-- `markdown_renderer.py` — Converts JSON to formatted markdown with color emoji indicators (green/yellow/red), tables per category, and all sections.
-- Frontend: install `react-markdown` + `remark-gfm`, render formatted markdown in `ReportView.tsx`.
-- Alembic migration: add `result_json` column.
-- Tests: `test_llm_analyzer.py` (mock OpenAI API).
+- `markdown_renderer.py` — Converts JSON to formatted markdown with emoji circle indicators (🟢/🟡/🔴), tables per category, and all 7 sections.
+- Frontend: install `react-markdown` + `remark-gfm`, render backend-generated markdown in `ReportView.tsx`. No custom React components from JSON — markdown-only rendering approach.
+- `value` field supports both numeric and string types for qualitative lab results (e.g., "Positive", "Reactive").
+- Alembic migration: add `result_json` column if not already present.
+- Tests: `test_llm_analyzer.py` (mock LLM API).
 
 **Verify:** Upload a CBC report → see full interpretation with color-coded tables, severity labels, reference ranges, clinical associations, lifestyle tips, disclaimer.
 
