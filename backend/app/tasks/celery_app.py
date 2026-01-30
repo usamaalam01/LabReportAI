@@ -8,7 +8,7 @@ celery_app = Celery(
     "labreportai",
     broker=settings.redis_url,
     backend=settings.redis_url,
-    include=["app.tasks.analyze"],
+    include=["app.tasks.analyze", "app.tasks.cleanup"],
 )
 
 celery_app.conf.update(
@@ -21,3 +21,11 @@ celery_app.conf.update(
     task_acks_late=True,
     worker_prefetch_multiplier=1,
 )
+
+# Celery Beat schedule — periodic tasks
+celery_app.conf.beat_schedule = {
+    "cleanup-expired-reports": {
+        "task": "cleanup_expired_reports",
+        "schedule": 3600.0,  # every hour
+    },
+}

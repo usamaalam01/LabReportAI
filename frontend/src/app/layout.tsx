@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -7,6 +8,10 @@ export const metadata: Metadata = {
     "AI-powered lab report interpretation for educational insights.",
 };
 
+const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+const recaptchaEnabled =
+  recaptchaSiteKey && recaptchaSiteKey !== "placeholder";
+
 export default function RootLayout({
   children,
 }: {
@@ -14,6 +19,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {recaptchaEnabled && (
+          <Script
+            src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`}
+            strategy="afterInteractive"
+          />
+        )}
+      </head>
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <header className="border-b bg-white shadow-sm">
           <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">

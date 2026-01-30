@@ -9,12 +9,14 @@ from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.middleware import RateLimitExceeded, check_rate_limit
 from app.config import get_settings
 from app.db.session import get_db
 from app.models.report import Report, ReportStatus
 from app.schemas.report import AnalyzeReportResponse, ErrorResponse, ReportStatusResponse
 from app.services.file_validator import FileValidationError, validate_file
 from app.tasks.analyze import analyze_report
+from app.utils.recaptcha import RecaptchaError, verify_recaptcha
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -31,10 +33,30 @@ async def submit_report(
     age: int | None = Form(None),
     gender: str | None = Form(None),
     language: str = Form("en"),
+    captcha_token: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
 ):
     """Submit a lab report for analysis. Returns a job_id for polling."""
     settings = get_settings()
+
+    # Rate limit check
+    try:
+        await check_rate_limit(request)
+    except RateLimitExceeded as e:
+        return JSONResponse(
+            status_code=429,
+            content={"status": "error", "code": 429, "message": e.message},
+            headers={"Retry-After": str(e.retry_after)},
+        )
+
+    # reCAPTCHA verification (skipped when not configured)
+    try:
+        await verify_recaptcha(captcha_token or "")
+    except RecaptchaError as e:
+        return JSONResponse(
+            status_code=400,
+            content={"status": "error", "code": 400, "message": e.message},
+        )
 
     # Validate file
     try:

@@ -541,7 +541,13 @@ Development follows a **vertical slice** approach — each phase delivers a work
 - Global exception handlers in `main.py`: consistent error JSON for 422, 429, 500.
 - Tests: `test_api_reports.py` (reCAPTCHA mock, rate limiting, cleanup).
 
-**Verify:** reCAPTCHA blocks invalid tokens. 11th request from same IP returns 429. Old records with expired files cleaned up by Celery Beat.
+**Decisions:**
+- **reCAPTCHA enforcement**: Optional — auto-skipped when `RECAPTCHA_SECRET_KEY` is empty. Enforced only when keys are configured. Allows development without Google keys.
+- **File cleanup behavior**: Hard delete — delete uploaded files, generated PDFs/charts, AND remove the database record entirely. No trace remains after expiry.
+- **Rate limiting scope**: Upload endpoint only (`POST /v1/analyze-report`, 10/hour per IP). Status polling and PDF downloads remain unlimited.
+- **Celery Beat deployment**: Separate `celery-beat` Docker container in docker-compose.yml (same image, different command). Avoids duplicate runs with multiple workers.
+
+**Verify:** reCAPTCHA blocks invalid tokens (when keys configured). 11th request from same IP returns 429. Old records with expired files cleaned up by Celery Beat.
 
 ---
 

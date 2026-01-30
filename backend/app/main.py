@@ -52,6 +52,18 @@ async def validation_exception_handler(request: Request, exc):
     )
 
 
+@app.exception_handler(429)
+async def rate_limit_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=429,
+        content={
+            "status": "error",
+            "code": 429,
+            "message": "Too many requests. Please try again later.",
+        },
+    )
+
+
 @app.exception_handler(500)
 async def internal_error_handler(request: Request, exc):
     logger.exception("Internal server error")

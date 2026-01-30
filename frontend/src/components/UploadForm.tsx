@@ -4,12 +4,22 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { submitReport } from "@/lib/api";
 
+declare global {
+  interface Window {
+    grecaptcha?: {
+      ready: (cb: () => void) => void;
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+    };
+  }
+}
+
 const ALLOWED_TYPES = [
   "application/pdf",
   "image/jpeg",
   "image/png",
 ];
 const MAX_SIZE_MB = 20;
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
 export default function UploadForm() {
   const router = useRouter();
@@ -50,11 +60,32 @@ export default function UploadForm() {
     setSubmitting(true);
 
     try {
+      // Get reCAPTCHA token (if configured)
+      let captchaToken: string | undefined;
+      if (
+        RECAPTCHA_SITE_KEY &&
+        RECAPTCHA_SITE_KEY !== "placeholder" &&
+        window.grecaptcha
+      ) {
+        try {
+          captchaToken = await new Promise<string>((resolve) => {
+            window.grecaptcha!.ready(() => {
+              window
+                .grecaptcha!.execute(RECAPTCHA_SITE_KEY!, { action: "submit" })
+                .then(resolve);
+            });
+          });
+        } catch {
+          // reCAPTCHA not available — continue without token
+        }
+      }
+
       const result = await submitReport(
         file,
         age ? parseInt(age, 10) : undefined,
         gender || undefined,
-        language
+        language,
+        captchaToken
       );
       router.push(`/report/${result.job_id}`);
     } catch (err) {

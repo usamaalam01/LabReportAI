@@ -6,13 +6,15 @@ export async function submitReport(
   file: File,
   age?: number,
   gender?: string,
-  language: string = "en"
+  language: string = "en",
+  captchaToken?: string
 ): Promise<AnalyzeReportResponse> {
   const formData = new FormData();
   formData.append("file", file);
   if (age) formData.append("age", String(age));
   if (gender) formData.append("gender", gender);
   formData.append("language", language);
+  if (captchaToken) formData.append("captcha_token", captchaToken);
 
   const res = await fetch(`${API_URL}/v1/analyze-report`, {
     method: "POST",
