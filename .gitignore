@@ -34,6 +34,9 @@ storage/outputs/*
 !storage/uploads/.gitkeep
 !storage/outputs/.gitkeep
 
+# Sample test files
+samples/
+
 # Alembic
 backend/alembic/versions/__pycache__/
 
