@@ -613,6 +613,97 @@ Development follows a **vertical slice** approach — each phase delivers a work
 - `GET /v1/health` returns all services healthy.
 - Docker logs: structured, no sensitive data.
 
+**Phase 7 Implementation Decisions:**
+
+**Decision 1 — Test Data & Fixtures:**
+- Use existing sample files in `samples/` folder (no additional fixtures needed)
+- Valid lab reports for positive testing:
+  - `samples/Culture-Urine.pdf`
+  - `samples/HIGH SENSITIVE TROPONIN -I.pdf`
+  - `samples/Urine DR.pdf`
+- Non-lab documents for rejection testing:
+  - `samples/Lab Receipt.pdf`
+  - `samples/Lab Receipt2.pdf`
+- Total: 3 valid reports + 2 rejection test cases
+
+**Decision 2 — LLM Testing Strategy:**
+- Use real LLM calls for E2E tests (Option A)
+- Tests will verify actual integration with LLM providers
+- Requires valid API keys in test environment
+- Expected test duration: ~5-10s per test
+- Catches real API issues, response format changes, and integration problems
+
+**Decision 3 — WhatsApp E2E Testing:**
+- Use mocked Twilio webhook requests (Option A)
+- Simulate Twilio POST requests with test payloads
+- Mock Twilio media download API
+- No actual WhatsApp messages sent during automated tests
+- Real Twilio integration testing deferred to manual testing
+
+**Decision 4 — Test Scenario Priorities:**
+- Implement only must-have scenarios (Option A) - 5 core tests
+- Test coverage:
+  1. Valid lab report → successful analysis (English)
+  2. Valid lab report → successful analysis (Urdu)
+  3. Non-lab document (receipt) → rejected with clear error
+  4. Oversized file → rejected
+  5. Invalid file type → rejected
+- Additional scenarios (multi-panel, blurred, rate limiting, concurrent uploads) deferred
+
+**Decision 5 — Frontend Polish Features:**
+- Implement all features (Option D) - complete polish
+- Features to implement:
+  1. File drag-and-drop zone with visual feedback
+  2. Client-side file validation (type: PDF/PNG/JPEG, size: max 10MB)
+  3. Real-time progress indicators with polling (steps: "Extracting text...", "Analyzing report...", "Generating PDF...")
+  4. Responsive design with mobile-friendly layout (media queries, touch targets)
+  5. Accessibility: ARIA attributes, keyboard navigation, screen reader support
+  6. "Upload Another Report" button on results page
+
+**Decision 6 — Health Check Endpoint Scope:**
+- Implement dependency checks (Option B)
+- Health checks to implement:
+  1. MySQL connectivity check (simple SELECT 1 query)
+  2. Redis connectivity check (PING command)
+  3. Celery worker availability check (inspect active workers)
+- Response format: `{"status": "healthy|unhealthy", "checks": {"mysql": "ok|error", "redis": "ok|error", "celery": "ok|error"}}`
+- Fast response (~100-200ms)
+- Skip LLM/Twilio API checks to avoid external dependencies
+
+**Decision 7 — README Documentation Depth:**
+- Quick Start documentation (Option A)
+- Sections to include:
+  1. Project overview and features
+  2. Quick start (docker-compose up instructions)
+  3. Basic usage (how to upload a report)
+  4. Environment variables list with required/optional markers
+  5. Brief troubleshooting (common Docker issues)
+- Target length: 1-2 pages
+- Focus on getting users up and running quickly
+
+**Decision 8 — Logging Audit:**
+- Comprehensive audit (Option B)
+- Audit tasks:
+  1. Review all logging statements across backend codebase
+  2. Create PII detection patterns (phone numbers, emails, patient names, test values)
+  3. Implement log sanitization utility function
+  4. Update all logs to sanitize sensitive data
+  5. Test with real sample reports to verify no PII leaks
+- PII to scrub: patient names, phone numbers, email addresses, test result values, addresses
+- Keep safe: job_id, file types, error types, processing steps, timing metrics
+
+**Decision 9 — Error Handling Hardening:**
+- Specific error messages (Option B)
+- Error categories to implement:
+  1. OCR errors: "Text extraction failed - image quality too low", "Text extraction failed - unsupported format"
+  2. Pre-validation errors: "Document rejected - not a lab report", "Document rejected - insufficient medical data"
+  3. LLM errors: "Analysis failed - LLM timeout", "Analysis failed - invalid response format", "Analysis failed - rate limit exceeded"
+  4. PDF errors: "PDF generation failed - chart rendering error", "PDF generation failed - template error"
+  5. Translation errors: Already handled - falls back to English
+- User-facing messages: Clear, actionable guidance
+- Backend logs: Detailed error codes + stack traces for debugging
+- No graceful degradation (except translation) - full processing or clear failure
+
 ---
 
 ## 13. Phase Dependency Chain

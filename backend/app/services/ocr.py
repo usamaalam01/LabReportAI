@@ -81,7 +81,10 @@ def extract_text_from_pdf(pdf_path: str | Path) -> str:
         images = convert_from_path(str(pdf_path), dpi=200)
     except Exception as e:
         logger.error(f"Failed to convert PDF: {e}")
-        raise OCRError(f"Failed to read PDF file: {e}")
+        raise OCRError(
+            "Text extraction failed - unable to read PDF. "
+            "The file may be corrupted or password-protected."
+        )
 
     logger.info(f"PDF has {len(images)} pages")
 

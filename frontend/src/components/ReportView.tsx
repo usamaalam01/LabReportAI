@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { ReportStatusResponse } from "@/types";
 import { getDownloadUrl } from "@/lib/api";
 import DisclaimerBanner from "./DisclaimerBanner";
@@ -11,14 +12,20 @@ interface ReportViewProps {
 }
 
 export default function ReportView({ data }: ReportViewProps) {
+  const router = useRouter();
+
   return (
     <div className="space-y-6">
       <DisclaimerBanner />
 
       {/* Markdown result */}
-      <div className="rounded-lg border bg-white p-6 shadow-sm">
+      <div
+        className="rounded-lg border bg-white p-4 shadow-sm sm:p-6"
+        role="article"
+        aria-label="Lab report analysis results"
+      >
         {data.result_markdown ? (
-          <div className="prose prose-sm max-w-none text-gray-700">
+          <div className="prose prose-sm max-w-none text-gray-700 sm:prose-base">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {data.result_markdown}
             </ReactMarkdown>
@@ -28,28 +35,65 @@ export default function ReportView({ data }: ReportViewProps) {
         )}
       </div>
 
-      {/* PDF download */}
-      {data.result_pdf_url && (
-        <div className="text-center">
+      {/* Action buttons */}
+      <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4 sm:justify-center">
+        {/* PDF download */}
+        {data.result_pdf_url && (
           <a
             href={getDownloadUrl(data.job_id)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block rounded-md bg-green-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            aria-label="Download PDF report (opens in new tab)"
+            className="inline-flex items-center justify-center rounded-md bg-green-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           >
+            <svg
+              className="mr-2 h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
             Download PDF Report
           </a>
-        </div>
-      )}
+        )}
 
-      {/* Upload another */}
-      <div className="text-center">
-        <a
-          href="/"
-          className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+        {/* Upload another */}
+        <button
+          onClick={() => router.push("/")}
+          aria-label="Upload another lab report"
+          className="inline-flex items-center justify-center rounded-md border-2 border-blue-600 bg-white px-6 py-2.5 text-sm font-semibold text-blue-600 shadow-sm transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
+          <svg
+            className="mr-2 h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+            />
+          </svg>
           Upload Another Report
-        </a>
+        </button>
+      </div>
+
+      {/* Result metadata */}
+      <div className="text-center text-xs text-gray-400">
+        <p>Job ID: {data.job_id}</p>
+        {data.language && (
+          <p>Language: {data.language === "en" ? "English" : "Urdu (اردو)"}</p>
+        )}
       </div>
     </div>
   );

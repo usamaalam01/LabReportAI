@@ -90,11 +90,25 @@ def generate_pdf(
         }
 
         # Render HTML
-        html_content = template.render(**context)
+        try:
+            html_content = template.render(**context)
+        except Exception as e:
+            logger.exception(f"Template rendering failed for job {job_id}")
+            raise PDFGenerationError(
+                "PDF generation failed - template rendering error. "
+                "The analysis data may have unexpected formatting."
+            )
 
         # Generate PDF with WeasyPrint
-        html_doc = HTML(string=html_content, base_url=str(TEMPLATES_DIR))
-        html_doc.write_pdf(pdf_path)
+        try:
+            html_doc = HTML(string=html_content, base_url=str(TEMPLATES_DIR))
+            html_doc.write_pdf(pdf_path)
+        except Exception as e:
+            logger.exception(f"WeasyPrint PDF generation failed for job {job_id}")
+            raise PDFGenerationError(
+                "PDF generation failed - unable to create PDF document. "
+                "This may be due to font rendering issues."
+            )
 
         logger.info(f"PDF generated: {pdf_path}")
         return pdf_path
@@ -103,4 +117,4 @@ def generate_pdf(
         raise
     except Exception as e:
         logger.exception(f"PDF generation failed for job {job_id}")
-        raise PDFGenerationError(f"Failed to generate PDF: {e}")
+        raise PDFGenerationError(f"PDF generation failed - unexpected error: {type(e).__name__}")

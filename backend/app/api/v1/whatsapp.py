@@ -17,6 +17,7 @@ from app.db.session import sync_engine
 from app.models.report import Report, ReportSource, ReportStatus
 from app.services.whatsapp_sender import is_whatsapp_enabled, send_whatsapp_message
 from app.tasks.analyze import analyze_report
+from app.utils.pii_sanitizer import sanitize_phone_number
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/whatsapp")
@@ -74,7 +75,7 @@ async def whatsapp_webhook(
 
     # Strip "whatsapp:" prefix from phone number
     phone = From.replace("whatsapp:", "")
-    logger.info(f"WhatsApp message from {phone}: NumMedia={NumMedia}")
+    logger.info(f"WhatsApp message from {sanitize_phone_number(phone)}: NumMedia={NumMedia}")
 
     if NumMedia > 0 and MediaUrl0 and MediaContentType0:
         await _handle_media_message(phone, MediaUrl0, MediaContentType0)
@@ -139,7 +140,7 @@ async def _handle_media_message(
         send_whatsapp_message(phone, PROCESSING_MSG)
 
         logger.info(
-            f"WhatsApp report submitted: job_id={job_id}, phone={phone}"
+            f"WhatsApp report submitted: job_id={job_id}, phone={sanitize_phone_number(phone)}"
         )
 
     except Exception as e:

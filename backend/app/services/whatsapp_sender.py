@@ -5,6 +5,7 @@ Optional — gracefully skips when Twilio keys are empty or "placeholder".
 import logging
 
 from app.config import get_settings
+from app.utils.pii_sanitizer import sanitize_phone_number
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +50,7 @@ def send_whatsapp_message(to: str, body: str) -> None:
         to=f"whatsapp:{to}",
         body=body[:1600],
     )
-    logger.info(f"WhatsApp message sent: sid={message.sid}, to={to}")
+    logger.info(f"WhatsApp message sent: sid={message.sid}, to={sanitize_phone_number(to)}")
 
 
 def send_whatsapp_pdf(to: str, body: str, pdf_url: str) -> None:
@@ -75,4 +76,4 @@ def send_whatsapp_pdf(to: str, body: str, pdf_url: str) -> None:
         body=body[:1600],
         media_url=[pdf_url],
     )
-    logger.info(f"WhatsApp PDF sent: sid={message.sid}, to={to}")
+    logger.info(f"WhatsApp PDF sent: sid={message.sid}, to={sanitize_phone_number(to)}")
