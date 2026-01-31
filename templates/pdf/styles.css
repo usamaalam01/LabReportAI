@@ -238,3 +238,53 @@ tr.severity-critical {
 .disclaimer-box strong {
     color: #1f2937;
 }
+
+/* ========================================
+   RTL Support (Urdu)
+   ======================================== */
+
+[dir="rtl"] {
+    font-family: 'Noto Naskh Arabic', 'Noto Sans Arabic', 'DejaVu Sans', sans-serif;
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .results-table th {
+    text-align: right;
+}
+
+[dir="rtl"] .results-table td {
+    text-align: right;
+}
+
+[dir="rtl"] .col-status {
+    text-align: center;
+}
+
+[dir="rtl"] .col-value {
+    text-align: left;
+}
+
+[dir="rtl"] .info-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .info-item {
+    margin-right: 0;
+    margin-left: 10mm;
+}
+
+[dir="rtl"] .summary p {
+    text-align: right;
+}
+
+[dir="rtl"] .abnormal-analysis p,
+[dir="rtl"] .clinical-associations p,
+[dir="rtl"] .lifestyle-tips p {
+    text-align: right;
+}
+
+[dir="rtl"] .disclaimer-box {
+    border-left: 1px solid #d1d5db;
+    border-right: 4px solid #3b82f6;
+}

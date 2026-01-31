@@ -93,3 +93,13 @@ def get_analysis_llm(temperature: float = 0.0) -> BaseChatModel:
         provider=settings.llm_provider,
         temperature=temperature,
     )
+
+
+def get_translation_llm(temperature: float = 0.0) -> BaseChatModel:
+    """Get the LLM configured for translation (configurable, defaults to 8B)."""
+    settings = get_settings()
+    return get_llm(
+        model=settings.llm_translation_model,
+        provider=settings.llm_provider,
+        temperature=temperature,
+    )

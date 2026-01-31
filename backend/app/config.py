@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_analysis_model: str = "llama-3.3-70b-versatile"
     llm_validation_model: str = "llama-3.1-8b-instant"
+    llm_translation_model: str = "llama-3.1-8b-instant"
 
     # File Upload
     max_file_size: int = 20_971_520  # 20 MB

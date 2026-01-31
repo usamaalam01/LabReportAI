@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ 'ur' if is_rtl else 'en' }}" dir="{{ 'rtl' if is_rtl else 'ltr' }}">
 <head>
     <meta charset="UTF-8">
-    <title>Lab Report AI - Analysis Report</title>
+    <title>{% if is_rtl %}لیب رپورٹ AI - تجزیہ رپورٹ{% else %}Lab Report AI - Analysis Report{% endif %}</title>
     <style>
         {{ css_content | safe }}
     </style>
@@ -10,22 +10,22 @@
 <body>
 
     <!-- Title -->
-    <h1 class="report-title">Lab Report Analysis</h1>
+    <h1 class="report-title">{% if is_rtl %}لیب رپورٹ تجزیہ{% else %}Lab Report Analysis{% endif %}</h1>
 
     <!-- Patient Information -->
     <section class="patient-info">
-        <h2>Patient Information</h2>
+        <h2>{% if is_rtl %}مریض کی معلومات{% else %}Patient Information{% endif %}</h2>
         <div class="info-grid">
             <div class="info-item">
-                <span class="info-label">Age:</span>
+                <span class="info-label">{% if is_rtl %}عمر:{% else %}Age:{% endif %}</span>
                 <span class="info-value">{{ analysis.patient_info.age or 'N/A' }}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Gender:</span>
+                <span class="info-label">{% if is_rtl %}جنس:{% else %}Gender:{% endif %}</span>
                 <span class="info-value">{{ analysis.patient_info.gender or 'N/A' }}</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Report Date:</span>
+                <span class="info-label">{% if is_rtl %}رپورٹ کی تاریخ:{% else %}Report Date:{% endif %}</span>
                 <span class="info-value">{{ analysis.patient_info.report_date or 'N/A' }}</span>
             </div>
         </div>
@@ -33,13 +33,13 @@
 
     <!-- Summary -->
     <section class="summary">
-        <h2>Summary</h2>
-        <p>{{ analysis.summary or 'No summary available.' }}</p>
+        <h2>{% if is_rtl %}خلاصہ{% else %}Summary{% endif %}</h2>
+        <p>{{ analysis.summary or ('خلاصہ دستیاب نہیں ہے۔' if is_rtl else 'No summary available.') }}</p>
     </section>
 
     <!-- Test Results -->
     <section class="test-results">
-        <h2>Test Results</h2>
+        <h2>{% if is_rtl %}ٹیسٹ کے نتائج{% else %}Test Results{% endif %}</h2>
 
         {% for category in analysis.categories %}
         <div class="category-block">
@@ -49,12 +49,21 @@
             <table class="results-table">
                 <thead>
                     <tr>
+                        {% if is_rtl %}
+                        <th class="col-status">حالت</th>
+                        <th class="col-test">ٹیسٹ</th>
+                        <th class="col-value">قدر</th>
+                        <th class="col-unit">اکائی</th>
+                        <th class="col-ref">حوالہ حد</th>
+                        <th class="col-interp">تشریح</th>
+                        {% else %}
                         <th class="col-status">Status</th>
                         <th class="col-test">Test</th>
                         <th class="col-value">Value</th>
                         <th class="col-unit">Unit</th>
                         <th class="col-ref">Reference Range</th>
                         <th class="col-interp">Interpretation</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -85,7 +94,13 @@
                 {% endif %}
             {% endfor %}
             {% if has_standard %}
-            <p class="ref-footnote">* Reference values not available in the report; ranges based on standard medical knowledge.</p>
+            <p class="ref-footnote">
+                {% if is_rtl %}
+                * حوالہ اقدار رپورٹ میں دستیاب نہیں ہیں؛ حدود معیاری طبی معلومات پر مبنی ہیں۔
+                {% else %}
+                * Reference values not available in the report; ranges based on standard medical knowledge.
+                {% endif %}
+            </p>
             {% endif %}
 
             <!-- Charts for this category -->
@@ -107,7 +122,7 @@
             {% endif %}
 
             {% else %}
-            <p class="no-tests">No tests in this category.</p>
+            <p class="no-tests">{% if is_rtl %}اس زمرے میں کوئی ٹیسٹ نہیں۔{% else %}No tests in this category.{% endif %}</p>
             {% endif %}
         </div>
         {% endfor %}
@@ -116,7 +131,7 @@
     <!-- Abnormal Value Analysis -->
     {% if analysis.abnormal_analysis %}
     <section class="abnormal-analysis">
-        <h2>Abnormal Value Analysis</h2>
+        <h2>{% if is_rtl %}غیر معمولی اقدار کا تجزیہ{% else %}Abnormal Value Analysis{% endif %}</h2>
         <p>{{ analysis.abnormal_analysis }}</p>
     </section>
     {% endif %}
@@ -124,7 +139,7 @@
     <!-- Clinical Associations -->
     {% if analysis.clinical_associations %}
     <section class="clinical-associations">
-        <h2>Clinical Associations</h2>
+        <h2>{% if is_rtl %}طبی وابستگیاں{% else %}Clinical Associations{% endif %}</h2>
         <p>{{ analysis.clinical_associations }}</p>
     </section>
     {% endif %}
@@ -132,7 +147,7 @@
     <!-- Lifestyle Recommendations -->
     {% if analysis.lifestyle_tips %}
     <section class="lifestyle-tips">
-        <h2>Lifestyle Recommendations</h2>
+        <h2>{% if is_rtl %}طرزِ زندگی کی سفارشات{% else %}Lifestyle Recommendations{% endif %}</h2>
         <p>{{ analysis.lifestyle_tips }}</p>
     </section>
     {% endif %}
@@ -140,7 +155,7 @@
     <!-- Disclaimer -->
     <section class="disclaimer">
         <div class="disclaimer-box">
-            <strong>Disclaimer:</strong> {{ disclaimer }}
+            <strong>{% if is_rtl %}اعلان دستبرداری:{% else %}Disclaimer:{% endif %}</strong> {{ disclaimer }}
         </div>
     </section>
 

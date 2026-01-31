@@ -21,6 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 \
     libffi-dev \
     fonts-dejavu-core \
+    # Urdu/Arabic font support
+    fonts-noto-extra \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies

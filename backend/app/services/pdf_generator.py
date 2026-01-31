@@ -36,13 +36,16 @@ class PDFGenerationError(Exception):
         super().__init__(message)
 
 
-def generate_pdf(analysis: dict, charts: dict, job_id: str) -> str:
+def generate_pdf(
+    analysis: dict, charts: dict, job_id: str, language: str = "en"
+) -> str:
     """Generate a PDF report from analysis data and charts.
 
     Args:
-        analysis: Structured analysis dict from LLM.
+        analysis: Structured analysis dict from LLM (translated if Urdu).
         charts: Dict from chart_generator: { category_index: { "bar": path, "gauges": [paths] } }
         job_id: Job identifier for output path.
+        language: Report language ("en" or "ur"). Urdu uses RTL layout.
 
     Returns:
         Path to the generated PDF file.
@@ -75,12 +78,15 @@ def generate_pdf(analysis: dict, charts: dict, job_id: str) -> str:
             css_content = css_path.read_text(encoding="utf-8")
 
         # Prepare template context
+        is_rtl = language == "ur"
         context = {
             "analysis": analysis,
             "charts": charts,
             "css_content": css_content,
             "severity_colors": SEVERITY_COLORS,
             "disclaimer": analysis.get("disclaimer", DEFAULT_DISCLAIMER),
+            "language": language,
+            "is_rtl": is_rtl,
         }
 
         # Render HTML

@@ -572,6 +572,12 @@ Development follows a **vertical slice** approach — each phase delivers a work
 - Redis keys: `whatsapp:{phone_number}` with 30-minute TTL.
 - Tests: `test_whatsapp.py`.
 
+**Decisions:**
+- **Twilio/WhatsApp**: Optional — endpoint registered but returns 503 when Twilio keys are empty/placeholder. No crash in dev mode.
+- **Translation LLM**: Use validation model (8B) by default, but configurable via `LLM_TRANSLATION_MODEL` env var. Add `get_translation_llm()` factory.
+- **Pipeline flow**: Translate JSON → render Urdu markdown → generate Urdu PDF. Charts stay numeric (language-neutral). One coherent Urdu output.
+- **Urdu fonts**: Install `fonts-noto-extra` Debian package in Dockerfile.
+
 **Verify:** Website with Urdu translation — medical terms in parentheses. WhatsApp: send age → gender → photo → receive text + PDF.
 
 ---
