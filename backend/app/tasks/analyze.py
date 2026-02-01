@@ -107,11 +107,11 @@ def analyze_report(self, report_id: str) -> dict:
                 session.commit()
                 return {"status": "failed", "message": e.message}
 
-            # Step 4: LLM Analysis
+            # Step 4: LLM Analysis (with original OCR text to extract patient info)
             logger.info("Step 4: LLM analysis")
             try:
                 analysis_result = analyze_lab_report(
-                    ocr_text=scrubbed_text,
+                    ocr_text=ocr_text,  # Use original text to extract patient demographics
                     age=report.age,
                     gender=report.gender,
                 )

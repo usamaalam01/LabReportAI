@@ -57,16 +57,30 @@ def render_analysis_markdown(analysis: dict) -> str:
 
 def _render_patient_info(info: dict) -> str:
     """Render the Patient Information section."""
+    name = info.get("name", "N/A") or "N/A"
     age = info.get("age", "N/A") or "N/A"
     gender = info.get("gender", "N/A") or "N/A"
+    dob = info.get("date_of_birth", "N/A") or "N/A"
     report_date = info.get("report_date", "N/A") or "N/A"
 
-    return (
-        "## Patient Information\n\n"
-        f"- **Age:** {age}\n"
-        f"- **Gender:** {gender}\n"
-        f"- **Report Date:** {report_date}\n"
-    )
+    lines = ["## Patient Information\n"]
+
+    if name != "N/A":
+        lines.append(f"- **Name:** {name}")
+    if age != "N/A":
+        lines.append(f"- **Age:** {age}")
+    if gender != "N/A":
+        lines.append(f"- **Gender:** {gender}")
+    if dob != "N/A":
+        lines.append(f"- **Date of Birth:** {dob}")
+    if report_date != "N/A":
+        lines.append(f"- **Report Date:** {report_date}")
+
+    # If no info available, show placeholder
+    if len(lines) == 1:
+        lines.append("- Information not available in report")
+
+    return "\n".join(lines) + "\n"
 
 
 def _render_summary(summary: str) -> str:

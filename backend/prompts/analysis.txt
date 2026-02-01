@@ -4,7 +4,7 @@ IMPORTANT: You are NOT providing medical diagnosis or treatment recommendations.
 
 Analyze the following lab report text and provide a structured interpretation.
 
-Patient context:
+Patient context (from form input, use as fallback if not found in report):
 - Age: {age}
 - Gender: {gender}
 
@@ -14,9 +14,11 @@ Lab Report Text:
 Provide your analysis as a JSON object with this exact structure. Return ONLY the JSON object with no additional text, explanation, or markdown formatting.
 {{
   "patient_info": {{
-    "age": null or integer,
-    "gender": null or string,
-    "report_date": null or string
+    "name": null or string (extract from report if available),
+    "age": null or integer (extract from report if available, use context as fallback),
+    "gender": null or string (extract from report if available, use context as fallback),
+    "date_of_birth": null or string (extract from report if available, format: YYYY-MM-DD or as written),
+    "report_date": null or string (extract from report if available)
   }},
   "summary": "2-3 sentence high-level overview of findings",
   "categories": [
@@ -42,10 +44,11 @@ Provide your analysis as a JSON object with this exact structure. Return ONLY th
 }}
 
 Rules:
-1. Extract reference ranges from the report text when available. If not present, use standard medical knowledge and set reference_source to "standard_knowledge".
-2. Classify severity: normal (within range), borderline (slightly outside), critical (significantly abnormal).
-3. Group tests by category (CBC, Liver Panel, Kidney Panel, Thyroid, Lipid Profile, etc.).
-4. Always include the disclaimer.
-5. Be thorough but concise in interpretations.
-6. The "value" field can be a number (e.g., 13.5) or a string (e.g., "Positive", "Negative", "A+", "Non-Reactive"). Use whichever is appropriate for the test.
-7. Return ONLY valid JSON. Do not wrap in markdown code blocks.
+1. **Patient Information Extraction**: Look for patient name, age, gender, date of birth, and report date in the lab report text. Common labels include "Patient Name:", "Name:", "Age:", "DOB:", "Date:", "Report Date:", etc. Extract these carefully.
+2. Extract reference ranges from the report text when available. If not present, use standard medical knowledge and set reference_source to "standard_knowledge".
+3. Classify severity: normal (within range), borderline (slightly outside), critical (significantly abnormal).
+4. Group tests by category (CBC, Liver Panel, Kidney Panel, Thyroid, Lipid Profile, etc.).
+5. Always include the disclaimer.
+6. Be thorough but concise in interpretations.
+7. The "value" field can be a number (e.g., 13.5) or a string (e.g., "Positive", "Negative", "A+", "Non-Reactive"). Use whichever is appropriate for the test.
+8. Return ONLY valid JSON. Do not wrap in markdown code blocks.

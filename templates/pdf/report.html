@@ -16,18 +16,40 @@
     <section class="patient-info">
         <h2>{% if is_rtl %}مریض کی معلومات{% else %}Patient Information{% endif %}</h2>
         <div class="info-grid">
+            {% if analysis.patient_info.name %}
+            <div class="info-item">
+                <span class="info-label">{% if is_rtl %}نام:{% else %}Name:{% endif %}</span>
+                <span class="info-value">{{ analysis.patient_info.name }}</span>
+            </div>
+            {% endif %}
+
+            {% if analysis.patient_info.age %}
             <div class="info-item">
                 <span class="info-label">{% if is_rtl %}عمر:{% else %}Age:{% endif %}</span>
-                <span class="info-value">{{ analysis.patient_info.age or 'N/A' }}</span>
+                <span class="info-value">{{ analysis.patient_info.age }}</span>
             </div>
+            {% endif %}
+
+            {% if analysis.patient_info.gender %}
             <div class="info-item">
                 <span class="info-label">{% if is_rtl %}جنس:{% else %}Gender:{% endif %}</span>
-                <span class="info-value">{{ analysis.patient_info.gender or 'N/A' }}</span>
+                <span class="info-value">{{ analysis.patient_info.gender }}</span>
             </div>
+            {% endif %}
+
+            {% if analysis.patient_info.date_of_birth %}
+            <div class="info-item">
+                <span class="info-label">{% if is_rtl %}تاریخ پیدائش:{% else %}Date of Birth:{% endif %}</span>
+                <span class="info-value">{{ analysis.patient_info.date_of_birth }}</span>
+            </div>
+            {% endif %}
+
+            {% if analysis.patient_info.report_date %}
             <div class="info-item">
                 <span class="info-label">{% if is_rtl %}رپورٹ کی تاریخ:{% else %}Report Date:{% endif %}</span>
-                <span class="info-value">{{ analysis.patient_info.report_date or 'N/A' }}</span>
+                <span class="info-value">{{ analysis.patient_info.report_date }}</span>
             </div>
+            {% endif %}
         </div>
     </section>
 

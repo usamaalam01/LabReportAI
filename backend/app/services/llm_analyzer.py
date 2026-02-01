@@ -42,13 +42,14 @@ def analyze_lab_report(
     """Analyze lab report text using the LLM.
 
     Args:
-        ocr_text: PII-scrubbed OCR text from the lab report.
-        age: Patient age (optional).
-        gender: Patient gender (optional).
+        ocr_text: Original OCR text from the lab report (includes patient information).
+        age: Patient age from form input (optional, used as fallback).
+        gender: Patient gender from form input (optional, used as fallback).
         max_retries: Number of retry attempts on failure.
 
     Returns:
         Parsed analysis dict matching the analysis.txt JSON schema.
+        Includes extracted patient_info (name, age, gender, DOB, report_date).
 
     Raises:
         AnalysisError: If analysis fails after all retries.
