@@ -1,0 +1,31 @@
+# Caddyfile — Reverse proxy for LabReportAI
+# Replace {$DOMAIN} with your actual domain (e.g., labreportai.duckdns.org)
+# Or set DOMAIN env var before starting Caddy.
+
+{$DOMAIN:localhost} {
+	# API requests → backend
+	handle /v1/* {
+		reverse_proxy backend:8000
+	}
+
+	handle /docs* {
+		reverse_proxy backend:8000
+	}
+
+	handle /openapi.json {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else → frontend
+	handle {
+		reverse_proxy frontend:3000
+	}
+
+	# Enable compression
+	encode gzip
+
+	# Logging
+	log {
+		output stdout
+	}
+}

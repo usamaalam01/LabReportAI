@@ -1,0 +1,94 @@
+# Production overrides — use with:
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+
+services:
+  mysql:
+    restart: always
+    ports: []  # Don't expose MySQL to host in production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  redis:
+    restart: always
+    ports: []  # Don't expose Redis to host in production
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  backend:
+    restart: always
+    ports: []  # Accessed via Caddy, not directly
+    volumes:
+      - ./templates:/app/templates:ro
+      - storage_data:/app/storage
+    command: >
+      sh -c "
+        alembic upgrade head &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+      "
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/v1/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  celery-worker:
+    restart: always
+    volumes:
+      - ./templates:/app/templates:ro
+      - storage_data:/app/storage
+    command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  celery-beat:
+    restart: always
+    volumes: []
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  frontend:
+    restart: always
+    ports: []  # Accessed via Caddy, not directly
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    volumes: []  # No source mount in production
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+volumes:
+  caddy_data:
+  caddy_config:

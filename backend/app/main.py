@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.router import api_router
+from app.config import get_settings
 from app.utils.logging import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -27,10 +28,12 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — allow frontend
+# CORS — allow frontend (configurable via CORS_ORIGINS env var)
+settings = get_settings()
+cors_origins = [origin.strip() for origin in settings.cors_origins.split(",")]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://frontend:3000"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

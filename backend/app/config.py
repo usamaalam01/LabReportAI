@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     recaptcha_site_key: str = ""
     rate_limit_per_ip: int = 10
 
+    # CORS
+    cors_origins: str = "http://localhost:3000,http://frontend:3000"
+
     # Storage
     retention_period: int = 48  # hours
     storage_path: str = "/app/storage"
