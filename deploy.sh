@@ -72,21 +72,14 @@ else
     echo "[4/6] .env file already exists."
 fi
 
-# --- Step 5: Open firewall ports ---
-echo "[5/6] Configuring firewall..."
-if command -v ufw &> /dev/null; then
-    sudo ufw allow 80/tcp
-    sudo ufw allow 443/tcp
-    sudo ufw allow 22/tcp
-    sudo ufw --force enable
-    echo "UFW firewall configured (ports 22, 80, 443 open)."
-else
-    echo "UFW not found. Make sure ports 80 and 443 are open in your cloud provider's security group/firewall."
-fi
-
-# Also open iptables (Oracle Cloud uses iptables by default)
+# --- Step 5: Open firewall ports (iptables — compatible with OCI) ---
+echo "[5/6] Configuring firewall (iptables)..."
+# NOTE: Do NOT use UFW on Oracle Cloud — it conflicts with OCI's iptables rules
+# and can lock you out of SSH.
 sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT 2>/dev/null || true
 sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT 2>/dev/null || true
+sudo netfilter-persistent save 2>/dev/null || true
+echo "iptables configured (ports 80, 443 open)."
 
 # --- Step 6: Build and start services ---
 echo "[6/6] Building and starting services..."
