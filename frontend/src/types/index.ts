@@ -11,6 +11,7 @@ export interface ReportStatusResponse {
   result_pdf_url: string | null;
   error_message: string | null;
   created_at: string | null;
+  language: string | null;
 }
 
 export interface ErrorResponse {
