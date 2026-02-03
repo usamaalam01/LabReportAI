@@ -200,6 +200,7 @@
         .phase-5 .phase-num { background: #fee2e2; color: #991b1b; }
         .phase-6 .phase-num { background: #d1fae5; color: #065f46; }
         .phase-7 .phase-num { background: #e0e7ff; color: #3730a3; }
+        .phase-8 .phase-num { background: #fef3c7; color: #92400e; }
         .phase-title { font-weight: 700; font-size: 0.95rem; }
         .phase-goal { font-size: 0.82rem; color: var(--gray-500); margin-left: auto; }
         .phase-body { padding: 16px 20px; }
@@ -227,7 +228,7 @@
     <div class="header-inner">
         <h1>Lab Report AI Interpretation API</h1>
         <p class="subtitle">Educational Lab Report Analysis System &mdash; Full-Stack Monorepo</p>
-        <span class="version-badge">SPECIFICATION v2.1 &middot; 14 SECTIONS &middot; 7-PHASE IMPLEMENTATION PLAN</span>
+        <span class="version-badge">SPECIFICATION v2.1 &middot; 15 SECTIONS &middot; 7-PHASE IMPLEMENTATION PLAN</span>
     </div>
 </div>
 
@@ -248,6 +249,7 @@
         <a href="#implementation">12. Phases</a>
         <a href="#dependencies">13. Dependencies</a>
         <a href="#future">14. Future</a>
+        <a href="#deployment">15. Deployment</a>
     </div>
 </nav>
 
@@ -675,13 +677,17 @@
         <div class="dir-tree"><span class="dir">labreportai/</span>
 ├── docker-compose.yml
 ├── docker-compose.prod.yml
+├── Caddyfile
+├── deploy.sh
 ├── .env.example
+├── .env.production.example
 ├── .gitignore
 ├── README.md
 ├── spec.md
 │
 ├── <span class="dir">frontend/</span>
 │   ├── Dockerfile
+│   ├── Dockerfile.prod
 │   ├── package.json
 │   ├── next.config.js
 │   ├── tailwind.config.js
@@ -934,10 +940,152 @@
     </div>
 </div>
 
+<!-- 15. PRODUCTION DEPLOYMENT -->
+<div class="section" id="deployment">
+    <div class="section-header">
+        <span class="num">15</span>
+        <h2>Production Deployment</h2>
+    </div>
+    <div class="section-body">
+        <h3>Production Architecture</h3>
+        <div class="callout info">
+            <strong>Single-Server Docker Compose Deployment</strong>
+            All 7 services run on one VPS. Caddy handles HTTPS termination and reverse proxying. Only ports 80/443 exposed &mdash; all other services communicate internally via Docker networking.
+        </div>
+        <div class="arch-grid">
+            <div class="arch-box fe">
+                <h4>Public (Internet-facing)</h4>
+                <ul>
+                    <li>Caddy &rarr; HTTPS :443</li>
+                    <li>Frontend :3000</li>
+                    <li>Backend :8000</li>
+                </ul>
+            </div>
+            <div class="arch-box be">
+                <h4>Internal Only</h4>
+                <ul>
+                    <li>MySQL :3306</li>
+                    <li>Redis :6379</li>
+                    <li>Celery Worker</li>
+                    <li>Celery Beat</li>
+                </ul>
+            </div>
+            <div class="arch-box data">
+                <h4>Reverse Proxy (Caddy)</h4>
+                <ul>
+                    <li>/v1/* &rarr; Backend</li>
+                    <li>/docs* &rarr; Backend</li>
+                    <li>/* &rarr; Frontend</li>
+                    <li>Auto-SSL (Let's Encrypt)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>Hosting: Oracle Cloud Always-Free Tier</h3>
+        <table>
+            <thead><tr><th>Item</th><th>Details</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Provider</strong></td><td>Oracle Cloud Infrastructure (OCI)</td></tr>
+                <tr><td><strong>VM Shape</strong></td><td>VM.Standard.A1.Flex (ARM Ampere)</td></tr>
+                <tr><td><strong>Resources</strong></td><td>4 OCPUs, 24 GB RAM, 200 GB disk</td></tr>
+                <tr><td><strong>Cost</strong></td><td>$0/month (permanently free, not trial)</td></tr>
+                <tr><td><strong>OS</strong></td><td>Ubuntu 22.04 (ARM)</td></tr>
+            </tbody>
+        </table>
+        <div class="callout success" style="margin-top:12px">
+            <strong>Permanently Free</strong>
+            Oracle Cloud's Always-Free Tier provides an ARM Ampere A1 instance with 4 CPUs and 24 GB RAM &mdash; more than sufficient for all services. This is not a 12-month trial; the resources remain free indefinitely.
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>Domain &amp; SSL</h3>
+        <table>
+            <thead><tr><th>Item</th><th>Details</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Domain</strong></td><td>DuckDNS free subdomain (e.g., <code>labreportai.duckdns.org</code>)</td></tr>
+                <tr><td><strong>SSL</strong></td><td>Automatic HTTPS via Caddy + Let's Encrypt</td></tr>
+                <tr><td><strong>DNS Updates</strong></td><td>Cron job updates DuckDNS IP every 5 minutes</td></tr>
+            </tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <h3>Production Service Configuration</h3>
+        <table>
+            <thead><tr><th>Service</th><th>Image / Build</th><th>RAM</th><th>Details</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Caddy</strong></td><td><code>caddy:2-alpine</code></td><td>128 MB</td><td>Reverse proxy, auto-SSL, gzip</td></tr>
+                <tr><td><strong>Frontend</strong></td><td><code>Dockerfile.prod</code></td><td>512 MB</td><td>Multi-stage build, Next.js standalone (~150 MB image)</td></tr>
+                <tr><td><strong>Backend</strong></td><td><code>Dockerfile</code></td><td>2 GB</td><td>2 uvicorn workers, health checks every 30s</td></tr>
+                <tr><td><strong>Celery Worker</strong></td><td>Same as backend</td><td>2 GB</td><td>2 concurrency, restart always</td></tr>
+                <tr><td><strong>Celery Beat</strong></td><td>Same as backend</td><td>256 MB</td><td>Periodic task scheduler</td></tr>
+                <tr><td><strong>MySQL</strong></td><td><code>mysql:8.0</code></td><td>1 GB</td><td>Persistent volume, restart always</td></tr>
+                <tr><td><strong>Redis</strong></td><td><code>redis:7-alpine</code></td><td>256 MB</td><td>Celery broker + session cache</td></tr>
+            </tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <h3>Deployment Files</h3>
+        <table>
+            <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+            <tbody>
+                <tr><td><code>docker-compose.prod.yml</code></td><td>Production overrides: resource limits, restart policies, Caddy service, no port exposure for internal services</td></tr>
+                <tr><td><code>frontend/Dockerfile.prod</code></td><td>Multi-stage Next.js build (<code>npm run build</code> &rarr; standalone <code>node server.js</code>, ~150 MB image)</td></tr>
+                <tr><td><code>Caddyfile</code></td><td>Reverse proxy routes: <code>/v1/*</code> &rarr; backend, <code>/docs*</code> &rarr; backend, everything else &rarr; frontend. Auto-SSL.</td></tr>
+                <tr><td><code>.env.production.example</code></td><td>Production environment template with secure defaults and placeholder passwords</td></tr>
+                <tr><td><code>deploy.sh</code></td><td>One-command VPS setup: installs Docker, clones repo, configures environment, opens firewall, launches all services</td></tr>
+            </tbody>
+        </table>
+
+        <div class="divider"></div>
+
+        <h3>Deployment Steps</h3>
+        <div class="flow">
+            <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 1 &mdash; Create Oracle Cloud Account</strong><p>Sign up at cloud.oracle.com (free, credit card for identity verification only).</p></div></div>
+            <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 2 &mdash; Create ARM Instance</strong><p>Shape: <code>VM.Standard.A1.Flex</code>, 4 OCPU, 24 GB RAM, Ubuntu 22.04, 100 GB boot volume.</p></div></div>
+            <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 3 &mdash; Open Ports</strong><p>OCI Security List: add ingress rules for ports 80 and 443 (TCP, 0.0.0.0/0).</p></div></div>
+            <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 4 &mdash; Create DuckDNS Subdomain</strong><p>Sign in at duckdns.org with GitHub, create subdomain, point to instance public IP.</p></div></div>
+            <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div><div class="flow-content"><strong>Step 5 &mdash; SSH &amp; Deploy</strong><p>SSH into the instance, clone repo, copy <code>.env.production.example</code> to <code>.env</code>, set real passwords and API keys, run <code>deploy.sh</code>.</p></div></div>
+            <div class="flow-step"><div class="flow-line"><div class="flow-dot"></div></div><div class="flow-content"><strong>Step 6 &mdash; Verify</strong><p>Frontend loads at <code>https://domain</code>. Health check at <code>/v1/health</code> returns healthy. Upload a sample report to test full pipeline.</p></div></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>Security Checklist</h3>
+        <ul class="checklist">
+            <li><span class="check"></span>Strong unique MySQL password in <code>.env</code> (not defaults)</li>
+            <li><span class="check"></span>LLM API key set in <code>.env</code> (not committed to git)</li>
+            <li><span class="check"></span>Caddy provides HTTPS (auto-SSL via Let's Encrypt)</li>
+            <li><span class="check"></span>Only ports 80 and 443 open to internet</li>
+            <li><span class="check"></span>Backend, MySQL, Redis not directly accessible from internet</li>
+            <li><span class="check"></span>Oracle Cloud firewall configured (Security List ingress rules)</li>
+            <li><span class="check"></span>CORS origins set to production domain only</li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <h3>Cost Summary</h3>
+        <table>
+            <thead><tr><th>Item</th><th>Cost</th></tr></thead>
+            <tbody>
+                <tr><td>Oracle Cloud VM (ARM A1, 4 CPU / 24 GB)</td><td>$0/month (always free)</td></tr>
+                <tr><td>DuckDNS subdomain</td><td>$0 (free)</td></tr>
+                <tr><td>SSL certificate (Let's Encrypt via Caddy)</td><td>$0 (free)</td></tr>
+                <tr><td>Groq API (LLM &mdash; free tier: 30 req/min)</td><td>$0 (free)</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>$0/month</strong></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 </div><!-- container -->
 
 <div class="footer">
-    Lab Report AI &middot; Specification v2.1 &middot; 14 Sections &middot; 7-Phase Implementation Plan &middot; For Development Reference Only
+    Lab Report AI &middot; Specification v2.1 &middot; 15 Sections &middot; 7-Phase Implementation Plan &middot; For Development Reference Only
 </div>
 
 </body>

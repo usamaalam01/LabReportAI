@@ -308,13 +308,17 @@ All personal information scrubbed from OCR text **before** sending to the LLM:
 labreportai/
 ├── docker-compose.yml
 ├── docker-compose.prod.yml
+├── Caddyfile
+├── deploy.sh
 ├── .env.example
+├── .env.production.example
 ├── .gitignore
 ├── README.md
 ├── spec.md
 │
 ├── frontend/
 │   ├── Dockerfile
+│   ├── Dockerfile.prod
 │   ├── package.json
 │   ├── next.config.js
 │   ├── tailwind.config.js
@@ -744,3 +748,128 @@ Each phase builds on the previous. After Phase 1, you have a working stub loop. 
 - EHR/EMR integration
 - Advanced analytics dashboard
 - Multi-language input report support
+
+---
+
+## 15. Production Deployment
+
+### Production Architecture
+
+```
+Internet → Caddy (HTTPS :443) → Frontend (:3000)
+                                → Backend  (:8000)
+         Internal only:
+           MySQL (:3306), Redis (:6379), Celery Worker, Celery Beat
+```
+
+All 7 services run on a single VPS via Docker Compose. Caddy handles HTTPS termination and reverse proxying. Only ports 80 and 443 are exposed to the internet — all other services communicate internally via Docker networking.
+
+### Hosting: Oracle Cloud Always-Free Tier
+
+| Item | Details |
+|------|---------|
+| Provider | Oracle Cloud Infrastructure (OCI) |
+| VM Shape | VM.Standard.A1.Flex (ARM Ampere) |
+| Resources | 4 OCPUs, 24GB RAM, 200GB disk |
+| Cost | $0/month (permanently free, not trial) |
+| OS | Ubuntu 22.04 (ARM) |
+
+Oracle Cloud's Always-Free Tier provides an ARM Ampere A1 instance with 4 CPUs and 24GB RAM — more than sufficient for all services. This is not a 12-month trial; the resources remain free indefinitely.
+
+### Domain & SSL
+
+| Item | Details |
+|------|---------|
+| Domain | DuckDNS free subdomain (e.g., `labreportai.duckdns.org`) |
+| SSL | Automatic HTTPS via Caddy + Let's Encrypt |
+| DNS Updates | Cron job updates DuckDNS IP every 5 minutes |
+
+DuckDNS provides free dynamic DNS subdomains. A cron job keeps the DNS record updated with the server's current IP address. Caddy automatically provisions and renews SSL certificates from Let's Encrypt.
+
+### Production Service Configuration
+
+| Service | Image / Build | RAM Limit | Details |
+|---------|--------------|-----------|---------|
+| Caddy | `caddy:2-alpine` | 128 MB | Reverse proxy, auto-SSL, gzip compression |
+| Frontend | `frontend/Dockerfile.prod` | 512 MB | Multi-stage build, Next.js standalone output (~150MB image) |
+| Backend | `backend/Dockerfile` | 2 GB | 2 uvicorn workers, health checks every 30s |
+| Celery Worker | Same as backend | 2 GB | 2 concurrency, restart always |
+| Celery Beat | Same as backend | 256 MB | Periodic task scheduler |
+| MySQL | `mysql:8.0` | 1 GB | Persistent volume, restart always |
+| Redis | `redis:7-alpine` | 256 MB | Celery broker + session cache |
+
+### Deployment Files
+
+| File | Purpose |
+|------|---------|
+| `docker-compose.prod.yml` | Production overrides: resource limits, restart policies, Caddy service, no port exposure for internal services |
+| `frontend/Dockerfile.prod` | Multi-stage Next.js build (`npm run build` → standalone `node server.js`, ~150MB image) |
+| `Caddyfile` | Reverse proxy routes: `/v1/*` → backend, `/docs*` → backend, everything else → frontend. Auto-SSL. |
+| `.env.production.example` | Production environment template with secure defaults and placeholder passwords |
+| `deploy.sh` | One-command VPS setup: installs Docker, clones repo, configures environment, opens firewall, launches all services |
+
+### Deployment Steps
+
+1. **Create Oracle Cloud account** at cloud.oracle.com (free, credit card for identity verification only)
+2. **Create ARM Compute Instance**: Shape `VM.Standard.A1.Flex`, 4 OCPU, 24GB RAM, Ubuntu 22.04, 100GB boot volume
+3. **Open ports 80 and 443** in OCI Security List (VCN → Subnet → Security List → Ingress Rules)
+4. **Create DuckDNS subdomain** at duckdns.org (sign in with GitHub), point to instance public IP
+5. **SSH into the instance** and run `deploy.sh`:
+   ```bash
+   # Clone and deploy
+   git clone <repo-url> labreportai
+   cd labreportai
+   cp .env.production.example .env
+   # Edit .env with real passwords and API keys
+   nano .env
+   # Launch all services
+   bash deploy.sh
+   ```
+6. **Verify deployment**:
+   - `https://labreportai.duckdns.org` — Frontend loads
+   - `https://labreportai.duckdns.org/v1/health` — Returns `{"status": "healthy"}`
+   - Upload a sample lab report — Full pipeline works
+   - `docker compose logs -f` — No errors in logs
+
+### Production Commands
+
+```bash
+# Start all services (production mode)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+# View logs (follow)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+
+# View logs for a specific service
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f backend
+
+# Restart a service
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart backend
+
+# Stop all services
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+
+# Update and redeploy
+git pull
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+### Security Checklist
+
+- [ ] Strong unique MySQL password in `.env` (not defaults)
+- [ ] LLM API key set in `.env` (not committed to git)
+- [ ] Caddy provides HTTPS (auto-SSL via Let's Encrypt)
+- [ ] Only ports 80 and 443 open to internet
+- [ ] Backend, MySQL, Redis not directly accessible from internet
+- [ ] Oracle Cloud firewall configured (Security List ingress rules)
+- [ ] CORS origins set to production domain only
+
+### Cost Summary
+
+| Item | Cost |
+|------|------|
+| Oracle Cloud VM (ARM A1, 4 CPU / 24 GB) | $0/month (always free) |
+| DuckDNS subdomain | $0 (free) |
+| SSL certificate (Let's Encrypt via Caddy) | $0 (free) |
+| Groq API (LLM — free tier: 30 req/min) | $0 (free) |
+| **Total** | **$0/month** |
