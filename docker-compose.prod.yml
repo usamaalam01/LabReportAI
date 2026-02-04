@@ -5,18 +5,20 @@ services:
   mysql:
     restart: always
     ports: []  # Don't expose MySQL to host in production
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-
-  redis:
-    restart: always
-    ports: []  # Don't expose Redis to host in production
+    command: --innodb-buffer-pool-size=64M --innodb-log-file-size=16M --max-connections=20 --key-buffer-size=8M --table-open-cache=64
     deploy:
       resources:
         limits:
           memory: 256M
+
+  redis:
+    restart: always
+    ports: []  # Don't expose Redis to host in production
+    command: redis-server --maxmemory 32mb --maxmemory-policy allkeys-lru
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
   backend:
     restart: always
@@ -27,7 +29,7 @@ services:
     command: >
       sh -c "
         alembic upgrade head &&
-        uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
       "
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/v1/health')"]
@@ -38,18 +40,18 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 256M
 
   celery-worker:
     restart: always
     volumes:
       - ./templates:/app/templates:ro
       - storage_data:/app/storage
-    command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=2
+    command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=1
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 256M
 
   celery-beat:
     restart: always
@@ -57,7 +59,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 64M
 
   frontend:
     restart: always
@@ -69,7 +71,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 128M
 
   caddy:
     image: caddy:2-alpine
@@ -87,7 +89,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128M
+          memory: 64M
 
 volumes:
   caddy_data:

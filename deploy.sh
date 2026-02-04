@@ -19,6 +19,20 @@ echo "============================================="
 echo "  LabReportAI - Production Deployment"
 echo "============================================="
 
+# --- Step 0: Create swap file (needed for low-memory instances) ---
+if [ ! -f /swapfile ]; then
+    echo "[0/6] Creating 2GB swap file..."
+    sudo fallocate -l 2G /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    echo "Swap file created and enabled."
+else
+    echo "[0/6] Swap file already exists."
+    sudo swapon /swapfile 2>/dev/null || true
+fi
+
 # --- Step 1: Install Docker ---
 if ! command -v docker &> /dev/null; then
     echo "[1/6] Installing Docker..."
