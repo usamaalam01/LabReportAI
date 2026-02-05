@@ -1,5 +1,4 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -16,20 +15,13 @@ ENV NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
 
 RUN npm run build
 
-# Stage 2: Production runner
-FROM node:20-alpine AS runner
-
-WORKDIR /app
+# Copy static files to standalone folder (required for standalone output)
+RUN cp -r public .next/standalone/ 2>/dev/null || true
+RUN cp -r .next/static .next/standalone/.next/
 
 ENV NODE_ENV=production
-
-# Copy build output and required files
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.js ./next.config.js
+ENV HOSTNAME="0.0.0.0"
 
 EXPOSE 3000
 
-CMD ["npx", "next", "start"]
+CMD ["node", ".next/standalone/server.js"]

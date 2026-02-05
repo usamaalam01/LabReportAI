@@ -62,11 +62,9 @@ services:
           memory: 64M
 
   frontend:
+    image: labreportai-frontend:latest  # Use pre-built image
     restart: always
     ports: []  # Accessed via Caddy, not directly
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
     volumes: []  # No source mount in production
     deploy:
       resources:
