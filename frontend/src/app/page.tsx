@@ -1,4 +1,15 @@
-import UploadForm from "@/components/UploadForm";
+import dynamic from "next/dynamic";
+
+const UploadForm = dynamic(() => import("@/components/UploadForm"), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-pulse space-y-6 rounded-lg border bg-white p-6 shadow-sm">
+      <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+      <div className="h-32 bg-gray-200 rounded"></div>
+      <div className="h-10 bg-gray-200 rounded"></div>
+    </div>
+  ),
+});
 
 export default function HomePage() {
   return (
