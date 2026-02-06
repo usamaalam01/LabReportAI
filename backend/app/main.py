@@ -78,3 +78,17 @@ async def internal_error_handler(request: Request, exc):
             "message": "An internal error occurred. Please try again later.",
         },
     )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    """Catch-all handler for any unhandled exceptions."""
+    logger.exception("Unhandled exception: %s", str(exc))
+    return JSONResponse(
+        status_code=500,
+        content={
+            "status": "error",
+            "code": 500,
+            "message": "An unexpected error occurred. Please try again later.",
+        },
+    )
