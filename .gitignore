@@ -53,5 +53,8 @@ coverage.xml
 .DS_Store
 Thumbs.db
 
+# SSH Keys
+keys/
+
 # Claude
 .claude/
