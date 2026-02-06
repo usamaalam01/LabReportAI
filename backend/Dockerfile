@@ -7,13 +7,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     default-libmysqlclient-dev \
     libmagic1 \
-    # OCR dependencies
+    # OCR dependencies (Tesseract - much lighter than PaddleOCR)
     poppler-utils \
-    libgl1 \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
+    tesseract-ocr \
+    tesseract-ocr-eng \
     # WeasyPrint dependencies
     libpango-1.0-0 \
     libpangocairo-1.0-0 \

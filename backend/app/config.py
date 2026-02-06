@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     max_file_size: int = 20_971_520  # 20 MB
     max_pages: int = 30
 
-    # OCR
-    ocr_engine: str = "PaddleOCR"
+    # OCR (Tesseract uses ~80% less memory than PaddleOCR)
+    ocr_engine: str = "Tesseract"
 
     # Validation
     validation_threshold: float = 0.8

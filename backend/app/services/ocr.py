@@ -1,35 +1,23 @@
-"""OCR service using PaddleOCR.
+"""OCR service using Tesseract.
 
 Handles images (direct OCR) and PDFs (convert to images first).
 Includes garbage text detection heuristic.
+
+Tesseract is used instead of PaddleOCR for significantly lower memory usage:
+- PaddleOCR: ~800MB for model loading
+- Tesseract: ~50-100MB per page (loads/unloads)
+
+This makes it suitable for servers with limited RAM (e.g., 1GB).
 """
 import logging
 import re
 from pathlib import Path
 
-from paddleocr import PaddleOCR
+import pytesseract
 from pdf2image import convert_from_path
 from PIL import Image
 
 logger = logging.getLogger(__name__)
-
-# Singleton PaddleOCR instance (expensive to initialize)
-_ocr_instance: PaddleOCR | None = None
-
-
-def get_ocr() -> PaddleOCR:
-    """Get or create the PaddleOCR instance."""
-    global _ocr_instance
-    if _ocr_instance is None:
-        logger.info("Initializing PaddleOCR...")
-        _ocr_instance = PaddleOCR(
-            use_angle_cls=True,  # Detect rotated text
-            lang="en",
-            use_gpu=False,  # CPU-only for compatibility
-            show_log=False,
-        )
-        logger.info("PaddleOCR initialized")
-    return _ocr_instance
 
 
 class OCRError(Exception):
@@ -41,7 +29,7 @@ class OCRError(Exception):
 
 
 def extract_text_from_image(image_path: str | Path) -> str:
-    """Extract text from a single image using PaddleOCR.
+    """Extract text from a single image using Tesseract.
 
     Args:
         image_path: Path to the image file.
@@ -49,20 +37,14 @@ def extract_text_from_image(image_path: str | Path) -> str:
     Returns:
         Extracted text as a string.
     """
-    ocr = get_ocr()
-    result = ocr.ocr(str(image_path), cls=True)
-
-    if not result or not result[0]:
+    try:
+        image = Image.open(image_path)
+        # Use English language, assume single block of text
+        text = pytesseract.image_to_string(image, lang='eng')
+        return text.strip()
+    except Exception as e:
+        logger.error(f"OCR failed for {image_path}: {e}")
         return ""
-
-    # Extract text from OCR result
-    lines = []
-    for line in result[0]:
-        if line and len(line) >= 2:
-            text = line[1][0]  # (text, confidence)
-            lines.append(text)
-
-    return "\n".join(lines)
 
 
 def extract_text_from_pdf(pdf_path: str | Path) -> str:
@@ -78,7 +60,9 @@ def extract_text_from_pdf(pdf_path: str | Path) -> str:
 
     # Convert PDF pages to images
     try:
-        images = convert_from_path(str(pdf_path), dpi=200)
+        # Use lower DPI (150) to reduce memory usage
+        # Lab reports are typically clear text, so this is sufficient
+        images = convert_from_path(str(pdf_path), dpi=150)
     except Exception as e:
         logger.error(f"Failed to convert PDF: {e}")
         raise OCRError(
@@ -93,16 +77,14 @@ def extract_text_from_pdf(pdf_path: str | Path) -> str:
     for i, image in enumerate(images):
         logger.info(f"OCR processing page {i + 1}/{len(images)}")
 
-        # Save temp image for PaddleOCR
-        temp_path = Path(f"/tmp/ocr_page_{i}.png")
-        image.save(temp_path, "PNG")
-
         try:
-            page_text = extract_text_from_image(temp_path)
-            if page_text:
-                all_text.append(f"--- Page {i + 1} ---\n{page_text}")
-        finally:
-            temp_path.unlink(missing_ok=True)
+            # Process image directly without saving to temp file
+            page_text = pytesseract.image_to_string(image, lang='eng')
+            if page_text.strip():
+                all_text.append(f"--- Page {i + 1} ---\n{page_text.strip()}")
+        except Exception as e:
+            logger.error(f"OCR failed for page {i + 1}: {e}")
+            continue
 
     return "\n\n".join(all_text)
 
