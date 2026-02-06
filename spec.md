@@ -873,3 +873,244 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 | SSL certificate (Let's Encrypt via Caddy) | $0 (free) |
 | Groq API (LLM — free tier: 30 req/min) | $0 (free) |
 | **Total** | **$0/month** |
+
+---
+
+## 16. Detailed Deployment Guide
+
+### Prerequisites
+
+- Windows machine with Docker Desktop installed (for building images)
+- SSH key for Oracle Cloud instance
+- Oracle Cloud instance running Ubuntu (x86 or ARM)
+- DuckDNS subdomain pointing to server IP
+- OCI Security List with ports 80 and 443 open
+
+### Step 1: Server Initial Setup (One-time)
+
+SSH into your Oracle Cloud instance:
+
+```bash
+ssh -i "path/to/your/ssh-key.key" ubuntu@YOUR_SERVER_IP
+```
+
+Install Docker and Docker Compose:
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+
+# Log out and back in for group changes
+exit
+```
+
+SSH back in and clone the repository:
+
+```bash
+ssh -i "path/to/your/ssh-key.key" ubuntu@YOUR_SERVER_IP
+
+# Clone repository
+git clone https://github.com/YOUR_USERNAME/LabReportAI.git ~/labreportai
+cd ~/labreportai
+
+# Create environment file
+cp .env.production.example .env
+nano .env  # Edit with your actual values
+```
+
+### Step 2: Build Frontend Image (Windows)
+
+The frontend must be built locally and transferred because:
+- Next.js standalone build embeds environment variables at build time
+- ARM/x86 architecture differences may cause issues building on server
+
+```powershell
+# Navigate to frontend directory
+cd "path\to\labreportai\frontend"
+
+# Build the production image with environment variables
+docker build -f Dockerfile.prod `
+  --build-arg NEXT_PUBLIC_API_URL=https://YOUR_DOMAIN.duckdns.org `
+  --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=placeholder `
+  -t labreportai-frontend:latest .
+
+# Save image to tar file
+docker save labreportai-frontend:latest -o frontend-image.tar
+
+# Transfer to server
+scp -i "path\to\your\ssh-key.key" frontend-image.tar ubuntu@YOUR_SERVER_IP:~/
+```
+
+### Step 3: Deploy on Server
+
+```bash
+cd ~/labreportai
+
+# Pull latest code
+git pull
+
+# Stop existing services
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+
+# Remove old frontend image (if exists)
+docker image rm labreportai-frontend:latest 2>/dev/null || true
+
+# Prune old volumes (removes cached/stale data)
+docker volume prune -f
+
+# Load the new frontend image
+docker load < ~/frontend-image.tar
+
+# Start all services
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+# Check logs
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+```
+
+### Step 4: Verify Deployment
+
+```bash
+# Check all containers are running
+docker ps
+
+# Check frontend logs
+docker compose logs frontend
+
+# Check backend logs
+docker compose logs backend
+
+# Test health endpoint
+curl https://YOUR_DOMAIN.duckdns.org/v1/health
+```
+
+Visit `https://YOUR_DOMAIN.duckdns.org` in browser to verify the site loads correctly.
+
+### Redeployment (After Code Changes)
+
+**For frontend changes:**
+
+On Windows:
+```powershell
+cd "path\to\labreportai\frontend"
+docker build -f Dockerfile.prod `
+  --build-arg NEXT_PUBLIC_API_URL=https://YOUR_DOMAIN.duckdns.org `
+  --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY=placeholder `
+  -t labreportai-frontend:latest .
+docker save labreportai-frontend:latest -o frontend-image.tar
+scp -i "path\to\ssh-key.key" frontend-image.tar ubuntu@YOUR_SERVER_IP:~/
+```
+
+On Server:
+```bash
+cd ~/labreportai
+git pull
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+docker image rm labreportai-frontend:latest 2>/dev/null || true
+docker volume prune -f
+docker load < ~/frontend-image.tar
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+**For backend-only changes:**
+
+On Server:
+```bash
+cd ~/labreportai
+git pull
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build backend celery-worker celery-beat
+```
+
+---
+
+## 17. Known Issues & Fixes
+
+### React Hydration Error #418
+
+**Problem:** After deploying Next.js 15 with React 19 in standalone mode, the page would show briefly with correct styling, then break with console error:
+```
+Uncaught Error: Minified React error #418
+```
+
+This error means "Hydration failed because the initial UI does not match what was rendered on the server."
+
+**Root Cause:** Server-side rendered HTML differed from what React expected on the client during hydration. This can happen due to:
+- Browser extensions modifying DOM
+- Dynamic content rendered differently on server vs client
+- Whitespace differences in JSX
+- Next.js standalone build quirks with React 19
+
+**Solution:** Use the "mounted pattern" - render nothing until the component mounts on the client, guaranteeing no server/client mismatch.
+
+**Fixed Code (frontend/src/app/page.tsx):**
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import UploadForm from "@/components/UploadForm";
+
+export default function HomePage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Return null until mounted - guarantees no hydration mismatch
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Page content here */}
+    </div>
+  );
+}
+```
+
+**Fixed Code (frontend/src/app/layout.tsx):**
+```tsx
+<html lang="en" suppressHydrationWarning>
+  <body className="..." suppressHydrationWarning>
+    {/* Layout content */}
+  </body>
+</html>
+```
+
+**Key Changes:**
+1. Add `"use client"` directive to page.tsx
+2. Use `useState(false)` + `useEffect` to track mount state
+3. Return `null` before mount (server and client both render nothing initially)
+4. After hydration succeeds, `useEffect` runs, `mounted` becomes `true`, real content renders
+5. Add `suppressHydrationWarning` to both `<html>` and `<body>` tags in layout.tsx
+6. Remove explicit `<head>` tag from layout (Next.js manages it automatically)
+
+### Docker Volume Override Issue
+
+**Problem:** Frontend container crashes with "MODULE_NOT_FOUND" for `/app/.next/standalone/server.js` even though the image was built correctly.
+
+**Root Cause:** Anonymous Docker volumes from base `docker-compose.yml` were mounting over the image's files, replacing the built standalone output with empty directories.
+
+**Solution:**
+1. In `docker-compose.prod.yml`, explicitly set `volumes: []` for frontend service
+2. Before redeploying, prune volumes: `docker volume prune -f`
+3. Remove and recreate containers completely (not just restart)
+
+### Caddy SSL Certificate Timeout
+
+**Problem:** Caddy fails to obtain SSL certificate with "Timeout during connect (likely firewall problem)".
+
+**Root Cause:** OCI Security List doesn't have ingress rules for ports 80 and 443.
+
+**Solution:** In OCI Console:
+1. Go to Networking → Virtual Cloud Networks → Your VCN
+2. Click on the public subnet
+3. Click on the Security List
+4. Add Ingress Rules:
+   - Source: `0.0.0.0/0`, Protocol: TCP, Destination Port: 80
+   - Source: `0.0.0.0/0`, Protocol: TCP, Destination Port: 443
