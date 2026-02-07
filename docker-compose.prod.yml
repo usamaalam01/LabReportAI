@@ -65,7 +65,7 @@ services:
     image: labreportai-frontend:latest  # Use pre-built image
     restart: always
     ports: []  # Accessed via Caddy, not directly
-    volumes: []  # No source mount in production
+    volumes: !reset []  # Clear dev volume mounts
     deploy:
       resources:
         limits:
