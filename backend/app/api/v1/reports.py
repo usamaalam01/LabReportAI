@@ -1,6 +1,8 @@
+import asyncio
 import logging
 import os
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -15,8 +17,13 @@ from app.db.session import get_db
 from app.models.report import Report, ReportStatus
 from app.schemas.report import AnalyzeReportResponse, ErrorResponse, ReportStatusResponse
 from app.services.file_validator import FileValidationError, validate_file
+from app.services.ocr import OCRError, extract_text
+from app.services.llm_validator import ValidationError, check_validation_threshold, validate_lab_report
 from app.tasks.analyze import analyze_report
 from app.utils.recaptcha import RecaptchaError, verify_recaptcha
+
+# Thread pool for running sync OCR/validation in async context
+_executor = ThreadPoolExecutor(max_workers=2)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -84,6 +91,47 @@ async def submit_report(
     content = await file.read()
     with open(file_path, "wb") as f:
         f.write(content)
+
+    # Extract text with OCR (runs in thread pool)
+    loop = asyncio.get_event_loop()
+    try:
+        ocr_text = await loop.run_in_executor(_executor, extract_text, str(file_path))
+    except OCRError as e:
+        # Clean up file on error
+        file_path.unlink(missing_ok=True)
+        return JSONResponse(
+            status_code=400,
+            content={"status": "error", "code": 400, "message": e.message},
+        )
+
+    if not ocr_text or len(ocr_text.strip()) < 50:
+        file_path.unlink(missing_ok=True)
+        return JSONResponse(
+            status_code=400,
+            content={
+                "status": "error",
+                "code": 400,
+                "message": "Could not extract readable text from the document. Please ensure the image is clear and contains text.",
+            },
+        )
+
+    # Validate that this is a lab report (runs in thread pool)
+    try:
+        validation_result = await loop.run_in_executor(_executor, validate_lab_report, ocr_text)
+
+        if not check_validation_threshold(validation_result):
+            file_path.unlink(missing_ok=True)
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "status": "error",
+                    "code": 400,
+                    "message": f"This does not appear to be a lab report. {validation_result.reason}",
+                },
+            )
+    except ValidationError as e:
+        # If validation fails due to LLM error, let it proceed (fail open)
+        logger.warning(f"Validation error (proceeding anyway): {e.message}")
 
     # Create DB record
     report = Report(

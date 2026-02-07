@@ -1,7 +1,9 @@
 """Report analysis Celery task.
 
-Pipeline: OCR → PII scrub → pre-validate → LLM analysis → translate (if Urdu)
+Pipeline: OCR → PII scrub → LLM analysis → translate (if Urdu)
          → markdown render → charts → PDF → WhatsApp notification (if WhatsApp source).
+
+Note: Pre-validation (is this a lab report?) is now done during upload, not here.
 """
 import json
 import logging
@@ -15,11 +17,6 @@ from app.models.report import Report, ReportSource, ReportStatus
 from app.services.chart_generator import generate_charts_for_report
 from app.services.llm_analyzer import AnalysisError, analyze_lab_report
 from app.services.pdf_generator import PDFGenerationError, generate_pdf
-from app.services.llm_validator import (
-    ValidationError,
-    check_validation_threshold,
-    validate_lab_report,
-)
 from app.services.markdown_renderer import render_analysis_markdown
 from app.services.ocr import OCRError, extract_text
 from app.services.pii_scrubber import scrub_pii
@@ -37,13 +34,14 @@ def analyze_report(self, report_id: str) -> dict:
     Pipeline:
     1. OCR extraction (with garbage text detection)
     2. PII scrubbing
-    3. Pre-validation (LLM checks if it's a lab report)
-    4. LLM analysis (structured JSON interpretation)
-    5. Translation to Urdu (if language == "ur") — non-fatal
-    6. Markdown rendering from analysis JSON
-    7. Chart generation (Matplotlib bar + gauge)
-    8. PDF generation (WeasyPrint, with RTL if Urdu)
-    9. WhatsApp notification (if source == WHATSAPP) — non-fatal
+    3. LLM analysis (structured JSON interpretation)
+    4. Translation to Urdu (if language == "ur") — non-fatal
+    5. Markdown rendering from analysis JSON
+    6. Chart generation (Matplotlib bar + gauge)
+    7. PDF generation (WeasyPrint, with RTL if Urdu)
+    8. WhatsApp notification (if source == WHATSAPP) — non-fatal
+
+    Note: Pre-validation is done during upload, not in this task.
     """
     logger.info(f"Starting analysis for report_id={report_id}")
     settings = get_settings()
@@ -80,35 +78,9 @@ def analyze_report(self, report_id: str) -> dict:
             scrubbed_text = scrub_pii(ocr_text)
             report.ocr_text = scrubbed_text
 
-            # Step 3: Pre-validation with LLM
-            logger.info("Step 3: Pre-validation with LLM")
-            try:
-                validation_result = validate_lab_report(scrubbed_text)
-
-                if not check_validation_threshold(validation_result):
-                    error_msg = (
-                        f"This does not appear to be a lab report. "
-                        f"Reason: {validation_result.reason}"
-                    )
-                    logger.warning(f"Pre-validation failed: {error_msg}")
-                    report.status = ReportStatus.FAILED
-                    report.error_message = error_msg
-                    session.commit()
-                    return {"status": "failed", "message": error_msg}
-
-                logger.info(
-                    f"Pre-validation passed: confidence={validation_result.confidence:.2f}"
-                )
-
-            except ValidationError as e:
-                logger.warning(f"Validation error: {e.message}")
-                report.status = ReportStatus.FAILED
-                report.error_message = e.message
-                session.commit()
-                return {"status": "failed", "message": e.message}
-
-            # Step 4: LLM Analysis (with original OCR text to extract patient info)
-            logger.info("Step 4: LLM analysis")
+            # Step 3: LLM Analysis (with original OCR text to extract patient info)
+            # Note: Pre-validation was already done during upload
+            logger.info("Step 3: LLM analysis")
             try:
                 analysis_result = analyze_lab_report(
                     ocr_text=ocr_text,  # Use original text to extract patient demographics
@@ -122,10 +94,10 @@ def analyze_report(self, report_id: str) -> dict:
                 session.commit()
                 return {"status": "failed", "message": e.message}
 
-            # Step 5: Translation (if Urdu) — non-fatal
+            # Step 4: Translation (if Urdu) — non-fatal
             display_result = analysis_result  # default to English
             if report.language == "ur":
-                logger.info("Step 5: Translating to Urdu")
+                logger.info("Step 4: Translating to Urdu")
                 try:
                     display_result = translate_analysis(analysis_result)
                     logger.info("Translation complete")
@@ -135,14 +107,14 @@ def analyze_report(self, report_id: str) -> dict:
                     )
                     # Fall back to English
             else:
-                logger.info("Step 5: Skipping translation (language=en)")
+                logger.info("Step 4: Skipping translation (language=en)")
 
-            # Step 6: Render markdown from (translated or English) JSON
-            logger.info("Step 6: Rendering markdown")
+            # Step 5: Render markdown from (translated or English) JSON
+            logger.info("Step 5: Rendering markdown")
             markdown = render_analysis_markdown(display_result)
 
-            # Step 7: Generate charts (from ORIGINAL English JSON — numeric values)
-            logger.info("Step 7: Generating charts")
+            # Step 6: Generate charts (from ORIGINAL English JSON — numeric values)
+            logger.info("Step 6: Generating charts")
             charts = {}
             try:
                 charts = generate_charts_for_report(
@@ -152,8 +124,8 @@ def analyze_report(self, report_id: str) -> dict:
             except Exception as e:
                 logger.warning(f"Chart generation failed (non-fatal): {e}")
 
-            # Step 8: Generate PDF (non-fatal on failure)
-            logger.info("Step 8: Generating PDF")
+            # Step 7: Generate PDF (non-fatal on failure)
+            logger.info("Step 7: Generating PDF")
             try:
                 pdf_path = generate_pdf(
                     display_result,
@@ -178,12 +150,12 @@ def analyze_report(self, report_id: str) -> dict:
             report.result_markdown = markdown
             session.commit()
 
-            # Step 9: WhatsApp notification (if WhatsApp source) — non-fatal
+            # Step 8: WhatsApp notification (if WhatsApp source) — non-fatal
             if (
                 report.source == ReportSource.WHATSAPP
                 and report.whatsapp_number
             ):
-                logger.info("Step 9: Sending WhatsApp notification")
+                logger.info("Step 8: Sending WhatsApp notification")
                 try:
                     summary = display_result.get(
                         "summary", "Analysis complete."
