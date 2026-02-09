@@ -12,3 +12,19 @@ body {
     Arial,
     sans-serif;
 }
+
+/* Attention-grabbing pulse animation for CTA buttons */
+@keyframes attention-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(147, 51, 234, 0);
+    transform: scale(1.02);
+  }
+}
+
+.animate-attention-pulse {
+  animation: attention-pulse 1.5s ease-in-out 3;
+}
