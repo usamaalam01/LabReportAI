@@ -13,9 +13,10 @@ interface StatusPollerProps {
 }
 
 // Processing steps with estimated durations (for progress simulation)
-// Note: OCR and validation now happen during upload, so we start from analysis
 const PROCESSING_STEPS = [
-  { label: "Analyzing lab report...", duration: 15000 },
+  { label: "Extracting text from document...", duration: 3000 },
+  { label: "Validating document...", duration: 5000 },
+  { label: "Analyzing lab report...", duration: 12000 },
   { label: "Generating charts...", duration: 3000 },
   { label: "Creating PDF report...", duration: 4000 },
 ];

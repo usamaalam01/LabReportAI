@@ -103,3 +103,15 @@ def get_translation_llm(temperature: float = 0.0) -> BaseChatModel:
         provider=settings.llm_provider,
         temperature=temperature,
     )
+
+
+def get_chat_llm(temperature: float = 0.7) -> BaseChatModel:
+    """Get the LLM configured for chat (defaults to validation model, higher temp)."""
+    settings = get_settings()
+    # Use chat model if configured, otherwise fall back to validation model (8B)
+    model = settings.llm_chat_model or settings.llm_validation_model
+    return get_llm(
+        model=model,
+        provider=settings.llm_provider,
+        temperature=temperature,
+    )

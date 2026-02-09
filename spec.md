@@ -1114,3 +1114,421 @@ export default function HomePage() {
 4. Add Ingress Rules:
    - Source: `0.0.0.0/0`, Protocol: TCP, Destination Port: 80
    - Source: `0.0.0.0/0`, Protocol: TCP, Destination Port: 443
+
+---
+
+## 18. Post-Analysis Chat Feature (Phase 8)
+
+### Overview
+
+After a lab report is analyzed, users can interact with an AI chatbot to ask questions about their results. The chat provides personalized health insights based on the analysis, answering questions like "How is my lipid profile?" or "How can I improve my cholesterol with diet changes?"
+
+**Key Principles:**
+- Educational only — no diagnosis or treatment recommendations
+- Context-aware — AI has full access to the analysis results
+- Rate-limited — prevents abuse while allowing meaningful conversations
+- Ephemeral — no chat history persistence (MVP)
+
+---
+
+### User Experience
+
+#### Chat Widget
+- **Location**: Two access points on the report results page:
+  1. **Floating chat button** (bottom-right corner) — circular blue button with chat icon
+  2. **"Discuss your Report" button** — purple action button between "Download PDF Report" and "Upload Another Report"
+- **Trigger**: Both buttons appear only after report analysis is complete
+- **Initial State**: Floating button visible; inline button in action bar
+- **Expanded State**: Chat panel (550px × 650px on desktop; almost full-screen with 8px margins on mobile)
+- **Close Behavior**: Collapse to buttons; conversation preserved until page refresh
+
+#### Conversation Flow
+
+1. User clicks floating chat button
+2. Chat panel expands showing:
+   - Welcome message with context acknowledgment
+   - 3-4 starter question suggestions based on the report
+   - Message input field
+   - "X of 20 messages remaining" indicator
+3. User types a question or clicks a suggestion
+4. AI response streams in real-time (token by token)
+5. After AI responds, 2-3 contextual follow-up suggestions appear
+6. Conversation continues until user closes panel or exhausts message limit
+
+#### Message Limit UX
+- Display: "X of 20 messages remaining" at bottom of chat panel
+- Warning: When 5 messages remain, show subtle warning color
+- Final message: "You've used all 20 messages for this report. Download the PDF for a complete summary."
+- Counter only tracks user messages (not AI responses)
+
+---
+
+### Starter Questions (Initial Suggestions)
+
+Generated dynamically based on the analysis results. Examples:
+
+**For a CBC report with low hemoglobin:**
+- "What does my low hemoglobin mean?"
+- "How can I improve my hemoglobin levels naturally?"
+- "Should I be concerned about my CBC results?"
+
+**For a lipid panel with high LDL:**
+- "Explain my cholesterol results"
+- "What dietary changes can help lower my LDL?"
+- "How does my lipid profile affect heart health?"
+
+**For a thyroid panel:**
+- "What do my thyroid results indicate?"
+- "How does TSH relate to metabolism?"
+- "Are my T3 and T4 levels concerning?"
+
+**Generation Logic:**
+- Extract categories with abnormal/critical values from analysis JSON
+- Generate 3-4 relevant questions per report
+- Prioritize critical values, then borderline, then normal summaries
+- Fall back to generic questions if analysis lacks detail
+
+---
+
+### Contextual Follow-up Suggestions
+
+After each AI response, show 2-3 follow-up suggestions based on:
+- The topic of the previous question
+- Abnormal values not yet discussed
+- Natural conversation flow (e.g., after explaining a value → suggest lifestyle changes)
+
+**Example Flow:**
+1. User asks: "What does my high LDL mean?"
+2. AI explains LDL cholesterol
+3. Follow-ups appear:
+   - "How can I lower my LDL with diet?"
+   - "What exercise helps reduce cholesterol?"
+   - "Tell me about my other lipid values"
+
+---
+
+### API Specification
+
+#### Endpoint: Chat Message
+
+```
+POST /v1/chat/{job_id}
+```
+
+**Request Body:**
+```json
+{
+  "message": "What does my low hemoglobin mean?",
+  "conversation_history": [
+    {"role": "user", "content": "Previous question..."},
+    {"role": "assistant", "content": "Previous answer..."}
+  ]
+}
+```
+
+**Response:** Server-Sent Events (SSE) stream
+
+```
+event: token
+data: {"content": "Low "}
+
+event: token
+data: {"content": "hemoglobin "}
+
+event: token
+data: {"content": "indicates..."}
+
+event: done
+data: {"suggestions": ["How can I improve my hemoglobin?", "What foods are rich in iron?"], "messages_remaining": 18}
+
+event: error
+data: {"message": "Rate limit exceeded for this report"}
+```
+
+**Headers:**
+```
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: keep-alive
+```
+
+#### Endpoint: Get Starter Questions
+
+```
+GET /v1/chat/{job_id}/suggestions
+```
+
+**Response:**
+```json
+{
+  "suggestions": [
+    "What does my low hemoglobin mean?",
+    "How is my lipid profile overall?",
+    "Should I be concerned about any values?",
+    "What lifestyle changes do you recommend?"
+  ],
+  "messages_remaining": 20
+}
+```
+
+#### Error Responses
+
+| Status | Code | Message |
+|--------|------|---------|
+| 404 | REPORT_NOT_FOUND | Report not found or expired |
+| 400 | REPORT_NOT_READY | Report analysis not yet complete |
+| 429 | CHAT_LIMIT_EXCEEDED | Message limit (20) reached for this report |
+| 400 | MESSAGE_TOO_LONG | Message exceeds 500 character limit |
+| 503 | LLM_UNAVAILABLE | Chat service temporarily unavailable |
+
+---
+
+### Backend Implementation
+
+#### Chat Service (`backend/app/services/chat.py`)
+
+```python
+class ChatService:
+    def __init__(self, analysis_json: dict, job_id: str):
+        self.analysis = analysis_json
+        self.job_id = job_id
+        self.llm = get_chat_llm()  # Configurable, default 8B model
+
+    async def generate_response(
+        self,
+        message: str,
+        history: list[dict]
+    ) -> AsyncGenerator[str, None]:
+        """Stream chat response tokens."""
+        prompt = self._build_prompt(message, history)
+        async for token in self.llm.astream(prompt):
+            yield token
+
+    def generate_suggestions(self) -> list[str]:
+        """Generate starter questions from analysis."""
+        # Extract abnormal values, generate relevant questions
+        pass
+
+    def generate_followups(self, last_response: str) -> list[str]:
+        """Generate contextual follow-up suggestions."""
+        pass
+```
+
+#### Chat Prompt Template (`backend/prompts/chat.txt`)
+
+```
+You are a friendly health education assistant helping a user understand their lab report results.
+
+CONTEXT - Analysis Results:
+{analysis_json}
+
+RULES:
+1. You are NOT a doctor. Never diagnose or prescribe treatment.
+2. Provide educational information only.
+3. Reference specific values from the user's report when relevant.
+4. Suggest lifestyle changes when appropriate (diet, exercise, sleep).
+5. Recommend consulting a doctor for concerning values.
+6. Keep responses concise (2-3 paragraphs max).
+7. Use simple language; explain medical terms.
+8. Be encouraging and supportive.
+9. If asked about topics outside the lab report, politely redirect to health topics.
+
+MANDATORY DISCLAIMER (include at end of responses about concerning values):
+"This is educational information only. Please consult your healthcare provider for personalized medical advice."
+
+CONVERSATION HISTORY:
+{history}
+
+USER QUESTION:
+{message}
+
+Respond helpfully:
+```
+
+#### Rate Limiting
+
+Track message count per report in Redis:
+
+```python
+# Redis key: chat_count:{job_id}
+# Value: integer (0-20)
+# TTL: Same as report retention (48 hours)
+
+async def check_chat_limit(job_id: str) -> tuple[bool, int]:
+    """Check if user can send more messages. Returns (allowed, remaining)."""
+    key = f"chat_count:{job_id}"
+    count = await redis.get(key) or 0
+    remaining = 20 - int(count)
+    return remaining > 0, remaining
+
+async def increment_chat_count(job_id: str) -> int:
+    """Increment message count, return remaining."""
+    key = f"chat_count:{job_id}"
+    count = await redis.incr(key)
+    if count == 1:
+        # Set TTL on first message
+        await redis.expire(key, 48 * 60 * 60)
+    return 20 - count
+```
+
+---
+
+### Frontend Implementation
+
+#### Components
+
+| Component | Purpose |
+|-----------|---------|
+| `ChatWidget.tsx` | Complete chat component with floating button, expandable panel, messages, input, and suggestions. Exposes `open()` method via `forwardRef` for external triggering. |
+
+**Note:** The chat is implemented as a single `ChatWidget` component rather than separate components. It includes:
+- Floating circular button (bottom-right)
+- Expandable chat panel (550×650px desktop, near full-screen mobile)
+- Message bubbles for user and AI
+- Suggestion chips for starter and follow-up questions
+- Text input with send button and remaining message counter
+
+The widget can be opened via:
+1. Clicking the floating button
+2. Clicking the "Discuss your Report" button (calls `chatWidgetRef.current.open()`)
+
+#### State Management
+
+```typescript
+interface ChatState {
+  isOpen: boolean;
+  messages: ChatMessage[];
+  isStreaming: boolean;
+  currentStreamedResponse: string;
+  suggestions: string[];
+  messagesRemaining: number;
+  error: string | null;
+}
+
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
+```
+
+#### Streaming Handler
+
+```typescript
+async function sendMessage(message: string) {
+  setIsStreaming(true);
+  setCurrentStreamedResponse("");
+
+  const response = await fetch(`/v1/chat/${jobId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, conversation_history: messages }),
+  });
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value);
+    const lines = chunk.split("\n");
+
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = JSON.parse(line.slice(6));
+        if (data.content) {
+          setCurrentStreamedResponse(prev => prev + data.content);
+        }
+        if (data.suggestions) {
+          setSuggestions(data.suggestions);
+          setMessagesRemaining(data.messages_remaining);
+        }
+      }
+    }
+  }
+
+  // Finalize message
+  setMessages(prev => [...prev,
+    { role: "user", content: message },
+    { role: "assistant", content: currentStreamedResponse }
+  ]);
+  setIsStreaming(false);
+}
+```
+
+---
+
+### Configuration Options
+
+| Option | Default | Purpose |
+|--------|---------|---------|
+| `CHAT_ENABLED` | true | Enable/disable chat feature |
+| `CHAT_MESSAGE_LIMIT` | 20 | Max messages per report |
+| `CHAT_MAX_MESSAGE_LENGTH` | 500 | Max characters per user message |
+| `LLM_CHAT_MODEL` | (validation model) | LLM for chat (configurable, default 8B) |
+| `CHAT_RESPONSE_MAX_TOKENS` | 500 | Max tokens per AI response |
+
+---
+
+### Database Changes
+
+No new tables required. Chat state is ephemeral:
+- Message count stored in Redis (`chat_count:{job_id}`)
+- Conversation history passed in each request (stateless backend)
+- Chat history not persisted (MVP decision)
+
+---
+
+### Files to Create/Modify
+
+#### New Files
+
+| File | Purpose |
+|------|---------|
+| `backend/app/api/v1/chat.py` | Chat API endpoints (SSE streaming + suggestions) |
+| `backend/app/services/chat.py` | Chat service with LLM integration and rate limiting |
+| `backend/app/schemas/chat.py` | Pydantic schemas for chat requests/responses |
+| `backend/prompts/chat.txt` | Chat system prompt |
+| `frontend/src/components/ChatWidget.tsx` | Complete chat widget (floating button + panel + messages + input) |
+| `frontend/src/lib/chat.ts` | Chat API client with SSE handling |
+
+#### Modified Files
+
+| File | Changes |
+|------|---------|
+| `backend/app/api/router.py` | Register chat routes |
+| `backend/app/config.py` | Add chat configuration options (llm_chat_model, chat_enabled, chat_message_limit, etc.) |
+| `backend/app/services/llm_provider.py` | Add `get_chat_llm()` factory function |
+| `frontend/src/components/ReportView.tsx` | Add ChatWidget with ref, add purple "Discuss your Report" button |
+| `frontend/src/types/index.ts` | Add chat-related types (ChatMessage, ChatStreamDoneEvent, etc.) |
+
+---
+
+### Acceptance Criteria
+
+1. ✅ Floating chat button appears on completed report page
+2. ✅ Chat panel opens/closes smoothly with animation
+3. ✅ Starter questions generated based on report content
+4. ✅ AI responses stream in real-time (visible token-by-token)
+5. ✅ Follow-up suggestions appear after each AI response
+6. ✅ Message counter shows "X of 20 messages remaining"
+7. ✅ Chat blocked after 20 messages with clear message
+8. ✅ 404 returned for expired/non-existent reports
+9. ✅ Mandatory disclaimer on health-related responses
+10. ✅ Chat works on mobile (responsive design)
+11. ✅ Chat only discusses health topics; redirects off-topic questions
+12. ✅ Streaming gracefully handles connection interruptions
+
+---
+
+### Out of Scope (Future Enhancements)
+
+- Chat history persistence across sessions
+- Urdu language support for chat
+- Voice input/output
+- Export chat transcript
+- WhatsApp chat integration
+- Multi-report context (compare with previous results)
+- Saved/favorite responses

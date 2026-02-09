@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     llm_analysis_model: str = "llama-3.3-70b-versatile"
     llm_validation_model: str = "llama-3.1-8b-instant"
     llm_translation_model: str = "llama-3.1-8b-instant"
+    llm_chat_model: str = ""  # Empty = use validation model (8B)
+
+    # Chat Feature
+    chat_enabled: bool = True
+    chat_message_limit: int = 20  # Max messages per report
+    chat_max_message_length: int = 500  # Max characters per user message
+    chat_response_max_tokens: int = 500  # Max tokens per AI response
 
     # File Upload
     max_file_size: int = 20_971_520  # 20 MB

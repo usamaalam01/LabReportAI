@@ -1,9 +1,11 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { ReportStatusResponse } from "@/types";
 import { getDownloadUrl } from "@/lib/api";
 import DisclaimerBanner from "./DisclaimerBanner";
+import ChatWidget, { type ChatWidgetRef } from "./ChatWidget";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -13,6 +15,11 @@ interface ReportViewProps {
 
 export default function ReportView({ data }: ReportViewProps) {
   const router = useRouter();
+  const chatWidgetRef = useRef<ChatWidgetRef>(null);
+
+  const handleOpenChat = () => {
+    chatWidgetRef.current?.open();
+  };
 
   return (
     <div className="space-y-6">
@@ -64,6 +71,31 @@ export default function ReportView({ data }: ReportViewProps) {
           </a>
         )}
 
+        {/* Discuss your report - opens chat */}
+        {data.status === "completed" && (
+          <button
+            onClick={handleOpenChat}
+            aria-label="Open chat to discuss your lab report"
+            className="inline-flex items-center justify-center rounded-md bg-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+          >
+            <svg
+              className="mr-2 h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
+            </svg>
+            Discuss your Report
+          </button>
+        )}
+
         {/* Upload another */}
         <button
           onClick={() => router.push("/")}
@@ -95,6 +127,9 @@ export default function ReportView({ data }: ReportViewProps) {
           <p>Language: {data.language === "en" ? "English" : "Urdu (اردو)"}</p>
         )}
       </div>
+
+      {/* Chat Widget - floating button to ask questions about results */}
+      {data.status === "completed" && <ChatWidget ref={chatWidgetRef} jobId={data.job_id} />}
     </div>
   );
 }

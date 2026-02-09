@@ -1,9 +1,8 @@
 """Report analysis Celery task.
 
-Pipeline: OCR → PII scrub → LLM analysis → translate (if Urdu)
-         → markdown render → charts → PDF → WhatsApp notification (if WhatsApp source).
-
-Note: Pre-validation (is this a lab report?) is now done during upload, not here.
+Pipeline: OCR → validate (is it a lab report?) → PII scrub → LLM analysis
+         → translate (if Urdu) → markdown render → charts → PDF
+         → WhatsApp notification (if WhatsApp source).
 """
 import json
 import logging
@@ -16,6 +15,11 @@ from app.db.session import sync_engine
 from app.models.report import Report, ReportSource, ReportStatus
 from app.services.chart_generator import generate_charts_for_report
 from app.services.llm_analyzer import AnalysisError, analyze_lab_report
+from app.services.llm_validator import (
+    ValidationError,
+    check_validation_threshold,
+    validate_lab_report,
+)
 from app.services.pdf_generator import PDFGenerationError, generate_pdf
 from app.services.markdown_renderer import render_analysis_markdown
 from app.services.ocr import OCRError, extract_text
@@ -33,15 +37,14 @@ def analyze_report(self, report_id: str) -> dict:
 
     Pipeline:
     1. OCR extraction (with garbage text detection)
-    2. PII scrubbing
-    3. LLM analysis (structured JSON interpretation)
-    4. Translation to Urdu (if language == "ur") — non-fatal
-    5. Markdown rendering from analysis JSON
-    6. Chart generation (Matplotlib bar + gauge)
-    7. PDF generation (WeasyPrint, with RTL if Urdu)
-    8. WhatsApp notification (if source == WHATSAPP) — non-fatal
-
-    Note: Pre-validation is done during upload, not in this task.
+    2. Validation (is this a lab report?) — fails fast if not
+    3. PII scrubbing
+    4. LLM analysis (structured JSON interpretation)
+    5. Translation to Urdu (if language == "ur") — non-fatal
+    6. Markdown rendering from analysis JSON
+    7. Chart generation (Matplotlib bar + gauge)
+    8. PDF generation (WeasyPrint, with RTL if Urdu)
+    9. WhatsApp notification (if source == WHATSAPP) — non-fatal
     """
     logger.info(f"Starting analysis for report_id={report_id}")
     settings = get_settings()
@@ -73,14 +76,41 @@ def analyze_report(self, report_id: str) -> dict:
 
             logger.info(f"OCR extracted {len(ocr_text)} characters")
 
-            # Step 2: PII scrubbing
-            logger.info("Step 2: PII scrubbing")
+            # Check for garbage/insufficient text
+            if not ocr_text or len(ocr_text.strip()) < 50:
+                logger.warning("OCR produced insufficient text")
+                report.status = ReportStatus.FAILED
+                report.error_message = (
+                    "Could not extract readable text from the document. "
+                    "Please ensure the image is clear and contains text."
+                )
+                session.commit()
+                return {"status": "failed", "message": report.error_message}
+
+            # Step 2: Validate this is a lab report
+            logger.info("Step 2: Validating document is a lab report")
+            try:
+                validation_result = validate_lab_report(ocr_text)
+                if not check_validation_threshold(validation_result):
+                    logger.warning(f"Document is not a lab report: {validation_result.reason}")
+                    report.status = ReportStatus.FAILED
+                    report.error_message = (
+                        f"This does not appear to be a lab report. {validation_result.reason}"
+                    )
+                    session.commit()
+                    return {"status": "failed", "message": report.error_message}
+                logger.info("Document validated as lab report")
+            except ValidationError as e:
+                # If validation fails due to LLM error, proceed anyway (fail open)
+                logger.warning(f"Validation error (proceeding anyway): {e.message}")
+
+            # Step 3: PII scrubbing
+            logger.info("Step 3: PII scrubbing")
             scrubbed_text = scrub_pii(ocr_text)
             report.ocr_text = scrubbed_text
 
-            # Step 3: LLM Analysis (with original OCR text to extract patient info)
-            # Note: Pre-validation was already done during upload
-            logger.info("Step 3: LLM analysis")
+            # Step 4: LLM Analysis (with original OCR text to extract patient info)
+            logger.info("Step 4: LLM analysis")
             try:
                 analysis_result = analyze_lab_report(
                     ocr_text=ocr_text,  # Use original text to extract patient demographics
@@ -94,10 +124,10 @@ def analyze_report(self, report_id: str) -> dict:
                 session.commit()
                 return {"status": "failed", "message": e.message}
 
-            # Step 4: Translation (if Urdu) — non-fatal
+            # Step 5: Translation (if Urdu) — non-fatal
             display_result = analysis_result  # default to English
             if report.language == "ur":
-                logger.info("Step 4: Translating to Urdu")
+                logger.info("Step 5: Translating to Urdu")
                 try:
                     display_result = translate_analysis(analysis_result)
                     logger.info("Translation complete")
@@ -107,14 +137,14 @@ def analyze_report(self, report_id: str) -> dict:
                     )
                     # Fall back to English
             else:
-                logger.info("Step 4: Skipping translation (language=en)")
+                logger.info("Step 5: Skipping translation (language=en)")
 
-            # Step 5: Render markdown from (translated or English) JSON
-            logger.info("Step 5: Rendering markdown")
+            # Step 6: Render markdown from (translated or English) JSON
+            logger.info("Step 6: Rendering markdown")
             markdown = render_analysis_markdown(display_result)
 
-            # Step 6: Generate charts (from ORIGINAL English JSON — numeric values)
-            logger.info("Step 6: Generating charts")
+            # Step 7: Generate charts (from ORIGINAL English JSON — numeric values)
+            logger.info("Step 7: Generating charts")
             charts = {}
             try:
                 charts = generate_charts_for_report(
@@ -124,8 +154,8 @@ def analyze_report(self, report_id: str) -> dict:
             except Exception as e:
                 logger.warning(f"Chart generation failed (non-fatal): {e}")
 
-            # Step 7: Generate PDF (non-fatal on failure)
-            logger.info("Step 7: Generating PDF")
+            # Step 8: Generate PDF (non-fatal on failure)
+            logger.info("Step 8: Generating PDF")
             try:
                 pdf_path = generate_pdf(
                     display_result,
@@ -150,12 +180,12 @@ def analyze_report(self, report_id: str) -> dict:
             report.result_markdown = markdown
             session.commit()
 
-            # Step 8: WhatsApp notification (if WhatsApp source) — non-fatal
+            # Step 9: WhatsApp notification (if WhatsApp source) — non-fatal
             if (
                 report.source == ReportSource.WHATSAPP
                 and report.whatsapp_number
             ):
-                logger.info("Step 8: Sending WhatsApp notification")
+                logger.info("Step 9: Sending WhatsApp notification")
                 try:
                     summary = display_result.get(
                         "summary", "Analysis complete."

@@ -19,3 +19,27 @@ export interface ErrorResponse {
   code: number;
   message: string;
 }
+
+// Chat types
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatSuggestionsResponse {
+  suggestions: string[];
+  messages_remaining: number;
+}
+
+export interface ChatStreamDoneEvent {
+  suggestions: string[];
+  messages_remaining: number;
+}
+
+export interface ChatStreamTokenEvent {
+  content: string;
+}
+
+export interface ChatStreamErrorEvent {
+  message: string;
+}
