@@ -1136,7 +1136,7 @@ After a lab report is analyzed, users can interact with an AI chatbot to ask que
 #### Chat Widget
 - **Location**: Two access points on the report results page:
   1. **Floating chat button** (bottom-right corner) — circular blue button with chat icon
-  2. **"Discuss your Report" button** — purple action button between "Download PDF Report" and "Upload Another Report"
+  2. **"Discuss Your Report" button** — purple action button between "Download PDF Report" and "Upload Another Report"
 - **Trigger**: Both buttons appear only after report analysis is complete
 - **Initial State**: Floating button visible; inline button in action bar
 - **Expanded State**: Chat panel (550px × 650px on desktop; almost full-screen with 8px margins on mobile)
@@ -1390,7 +1390,7 @@ async def increment_chat_count(job_id: str) -> int:
 
 The widget can be opened via:
 1. Clicking the floating button
-2. Clicking the "Discuss your Report" button (calls `chatWidgetRef.current.open()`)
+2. Clicking the "Discuss Your Report" button (calls `chatWidgetRef.current.open()`)
 
 #### State Management
 
@@ -1501,7 +1501,7 @@ No new tables required. Chat state is ephemeral:
 | `backend/app/api/router.py` | Register chat routes |
 | `backend/app/config.py` | Add chat configuration options (llm_chat_model, chat_enabled, chat_message_limit, etc.) |
 | `backend/app/services/llm_provider.py` | Add `get_chat_llm()` factory function |
-| `frontend/src/components/ReportView.tsx` | Add ChatWidget with ref, add purple "Discuss your Report" button |
+| `frontend/src/components/ReportView.tsx` | Add ChatWidget with ref, add purple "Discuss Your Report" button |
 | `frontend/src/types/index.ts` | Add chat-related types (ChatMessage, ChatStreamDoneEvent, etc.) |
 
 ---
@@ -1637,3 +1637,66 @@ MAX_IMAGE_DIMENSION=1024          # Resize larger images for API efficiency
 - Extract metadata from DICOM headers
 - Handle multi-slice 3D volumes (MRI, CT)
 - Select key slices for analysis
+
+---
+
+## 20. Website Branding & UI
+
+### Header
+
+| Element | Details |
+|---------|---------|
+| **Logo** | `frontend/public/logo.png` - LabReportAI logo with clipboard/brain icon |
+| **Logo Size** | Desktop: 96px height, Mobile: 64px height |
+| **Position** | Left side of header, links to homepage |
+| **Tagline** | "Educational Insights Only" - right side of header |
+
+### Footer
+
+| Element | Details |
+|---------|---------|
+| **Disclaimer** | "This tool provides educational insights only. It is not a diagnosis or treatment recommendation." |
+| **Credit** | "Developed by QueryVersity" with mailto link to queryversity@gmail.com |
+
+### Favicon
+
+| Element | Details |
+|---------|---------|
+| **File** | `frontend/src/app/icon.png` - Next.js auto-detects this for browser tab icon |
+| **Source** | `images/favicon.png` |
+
+### Action Button Animation
+
+The "Discuss Your Report" button features an attention-grabbing pulse animation:
+
+```css
+@keyframes attention-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(147, 51, 234, 0);
+    transform: scale(1.02);
+  }
+}
+
+.animate-attention-pulse {
+  animation: attention-pulse 1.5s ease-in-out 3;
+}
+```
+
+- **Purpose:** Draw user attention to the chat feature after report completion
+- **Duration:** 1.5 seconds per cycle, runs 3 times then stops
+- **Effect:** Purple glow expanding outward with slight scale-up
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `frontend/src/app/layout.tsx` | Header with logo, footer with credit |
+| `frontend/src/app/globals.css` | Pulse animation CSS |
+| `frontend/public/logo.png` | Logo image file |
+| `frontend/src/app/icon.png` | Favicon (auto-detected by Next.js) |
+| `images/logo.png` | Source logo file |
+| `images/favicon.png` | Source favicon file |

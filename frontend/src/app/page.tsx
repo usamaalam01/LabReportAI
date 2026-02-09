@@ -19,7 +19,10 @@ export default function HomePage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900">Lab Report Interpreter</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Lab Report Interpreter
+          <span className="ml-2 inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700 align-middle">Beta</span>
+        </h1>
         <p className="mt-2 text-gray-600">Upload your lab report to get an AI-powered educational interpretation with color-coded results, charts, and lifestyle tips.</p>
       </div>
       <UploadForm />
