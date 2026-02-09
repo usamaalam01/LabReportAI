@@ -1,0 +1,26 @@
+Server Deployment Steps
+
+1. SSH into server
+
+ssh -i "D:\AI Learning\LabReportAI\labreportai\keys\ssh-key-2026-02-04.key" ubuntu@145.241.114.192
+
+2. Pull latest code
+
+cd ~/labreportai
+git pull
+
+3. Rebuild frontend image (required for frontend changes)
+
+docker build -t labreportai-frontend:latest --no-cache -f frontend/Dockerfile frontend/
+
+4. Restart all services
+
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --force-recreate
+
+5. Watch logs to verify
+
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+
+Quick one-liner (after SSH):
+
+cd ~/labreportai && git pull && docker build -t labreportai-frontend:latest --no-cache -f frontend/Dockerfile frontend/ && docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --force-recreate

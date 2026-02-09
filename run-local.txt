@@ -1,0 +1,31 @@
+cd "d:\AI Learning\LabReportAI\labreportai"
+
+docker compose up -d
+Then open http://localhost:3000
+
+If changes are not taking place:
+docker compose up -d --force-recreate frontend
+
+
+Quick checklist:
+
+Frontend: http://localhost:3000
+Backend API: http://localhost:8000
+API docs: http://localhost:8000/docs
+
+If you encounter issues:
+
+Fresh start (clears old containers/volumes):
+
+docker compose down -v
+docker compose up -d --build
+
+Watch logs to see what's happening:
+
+docker compose logs -f
+
+Check specific service:
+
+docker compose logs -f frontend
+docker compose logs -f backend
+docker compose logs -f celery-worker
