@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import Image from "next/image";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,11 +28,18 @@ export default function RootLayout({
           />
         )}
         <header className="border-b bg-white shadow-sm">
-          <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-            <a href="/" className="text-xl font-bold text-blue-600">
-              Lab Report AI
+          <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
+            <a href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="LabReportAI"
+                width={480}
+                height={120}
+                priority
+                className="h-16 w-auto sm:h-24"
+              />
             </a>
-            <span className="text-sm text-gray-500">
+            <span className="text-xs text-gray-500 sm:text-sm">
               Educational Insights Only
             </span>
           </div>
@@ -41,6 +49,15 @@ export default function RootLayout({
           <p>
             This tool provides educational insights only. It is not a diagnosis
             or treatment recommendation.
+          </p>
+          <p className="mt-2">
+            Developed by{" "}
+            <a
+              href="mailto:queryversity@gmail.com"
+              className="text-blue-600 hover:underline"
+            >
+              QueryVersity
+            </a>
           </p>
         </footer>
       </body>
