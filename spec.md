@@ -1532,3 +1532,108 @@ No new tables required. Chat state is ephemeral:
 - WhatsApp chat integration
 - Multi-report context (compare with previous results)
 - Saved/favorite responses
+
+---
+
+## 19. Medical Imaging Analysis (Future - Phase 9)
+
+### Overview
+
+Extend LabReportAI to analyze medical imaging (ultrasound, X-ray, MRI, CT scans) using LLM vision APIs. This leverages existing LLM infrastructure rather than deploying specialized ML models, keeping memory usage low for resource-constrained servers.
+
+### Architecture Approach
+
+```
+Current:  Image → OCR → Text → LLM Text Analysis → Results
+New:      Image → Detect Type → Branch:
+          ├─ Lab Report → OCR → Text Analysis (existing)
+          └─ Medical Image → Vision LLM → Image Analysis (new)
+```
+
+### Scope Decisions
+
+- **Imaging Types:** All (X-ray, Ultrasound, MRI, CT) from the start
+- **File Formats:** Standard images only (PNG, JPG) - no DICOM initially
+- **LLM Provider:** Configurable via .env (like existing text analysis)
+
+---
+
+### New Files to Create
+
+| File | Purpose |
+|------|---------|
+| `backend/app/services/vision_analyzer.py` | Analyze images via LLM vision API |
+| `backend/app/services/imaging_validator.py` | Detect if image is medical imaging |
+| `backend/app/services/image_preprocessor.py` | Resize/encode images for API |
+| `backend/prompts/imaging_classification.txt` | Prompt for modality detection |
+| `backend/prompts/imaging_analysis.txt` | Prompt for medical image analysis |
+| `templates/pdf/imaging_report.html` | PDF template for imaging reports |
+
+### Files to Modify
+
+| File | Changes |
+|------|---------|
+| `backend/app/models/report.py` | Add `report_type`, `imaging_modality`, `body_region` columns |
+| `backend/app/tasks/analyze.py` | Add branching logic: lab report vs imaging |
+| `backend/app/services/llm_provider.py` | Add `get_vision_llm()` for vision-capable models |
+| `backend/app/config.py` | Add `llm_vision_model`, `max_image_dimension` settings |
+| `backend/app/services/markdown_renderer.py` | Add `render_imaging_markdown()` function |
+| `backend/app/services/pdf_generator.py` | Add `generate_imaging_pdf()` function |
+| `frontend/src/components/UploadForm.tsx` | Add report type selector (auto/lab/imaging) |
+| `frontend/src/types/index.ts` | Add imaging-related types |
+
+### Database Migration
+
+```sql
+ALTER TABLE reports ADD COLUMN report_type ENUM('lab_report', 'imaging') DEFAULT 'lab_report';
+ALTER TABLE reports ADD COLUMN imaging_modality VARCHAR(50);
+ALTER TABLE reports ADD COLUMN imaging_body_region VARCHAR(100);
+```
+
+### Configuration (.env)
+
+```bash
+# Vision LLM settings (configurable like existing text analysis)
+LLM_VISION_PROVIDER=groq          # groq, openai, google, anthropic
+LLM_VISION_MODEL=llama-3.2-90b-vision-preview  # or gpt-4o, gemini-pro-vision, claude-3-5-sonnet
+LLM_VISION_VALIDATION_MODEL=      # Cheaper model for classification (optional)
+MAX_IMAGE_DIMENSION=1024          # Resize larger images for API efficiency
+```
+
+### Output Structure for Imaging
+
+```json
+{
+  "study_info": { "modality": "xray", "body_region": "chest", "view": "PA" },
+  "findings": [
+    { "structure": "...", "observation": "...", "severity": "normal|mild|moderate|severe" }
+  ],
+  "measurements": [...],
+  "impression": "Summary",
+  "recommendations": "Follow-up suggestions",
+  "disclaimer": "Educational only"
+}
+```
+
+### Cost Estimation (Per Image)
+
+| Provider | Model | Cost |
+|----------|-------|------|
+| Groq | llama-3.2-90b-vision | Free tier available |
+| OpenAI | gpt-4o-mini (validation) | ~$0.002 |
+| OpenAI | gpt-4o (analysis) | ~$0.02-0.05 |
+| Anthropic | claude-3-5-sonnet | ~$0.03-0.08 |
+
+### Implementation Sequence
+
+1. **Backend Core** - Database migration, vision_analyzer.py service, imaging prompts
+2. **Pipeline Integration** - Modify analyze.py with branching, imaging markdown/PDF templates
+3. **Frontend** - Report type selector in upload form, imaging-specific results display
+4. **Testing** - Test with sample X-ray/ultrasound/MRI/CT images
+
+### Future: DICOM Support (Phase 10)
+
+- Add `pydicom` dependency for DICOM file parsing
+- Extract metadata from DICOM headers
+- Handle multi-slice 3D volumes (MRI, CT)
+- Select key slices for analysis
